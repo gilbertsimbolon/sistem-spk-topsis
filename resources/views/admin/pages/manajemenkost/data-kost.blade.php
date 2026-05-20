@@ -25,71 +25,71 @@
 
             @foreach ($kost as $k)
             <div class="col-md-4 mb-4">
+                <a href="{{ route('data-kost.show', $k->id) }}" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm">
 
-                <div class="card h-100 shadow-sm">
+                        <!-- Foto -->
+                        @if ($k->foto->count())
+                        <img src="{{ asset('storage/' . $k->foto->first()->foto) }}" class="card-img-top"
+                            style="height:180px;object-fit:cover;">
+                        @else
+                        <img src="{{ asset('template/paneladmin/assets/img/background/1.jpg') }}"
+                            class="card-img-top" style="height:180px;object-fit:cover;">
+                        @endif
 
-                    <!-- Foto -->
-                    @if ($k->foto->count())
-                    <img src="{{ asset('storage/' . $k->foto->first()->foto) }}" class="card-img-top"
-                        style="height:180px;object-fit:cover;">
-                    @else
-                    <img src="{{ asset('template/paneladmin/assets/img/background/1.jpg') }}"
-                        class="card-img-top" style="height:180px;object-fit:cover;">
-                    @endif
+                        <div class="card-body">
 
-                    <div class="card-body">
+                            <!-- NAMA -->
+                            <h5 class="mb-1">{{ $k->nama_kost }}</h5>
 
-                        <!-- NAMA -->
-                        <h5 class="mb-1">{{ $k->nama_kost }}</h5>
+                            <!-- ALAMAT -->
+                            <small class="text-muted">{{ $k->daerah->name ?? '-' }}</small>
 
-                        <!-- ALAMAT -->
-                        <small class="text-muted">{{ $k->daerah->name ?? '-' }}</small>
+                            <!-- Jenis -->
+                            <div class="mt-2">
+                                <span class="badge bg-primary">
+                                    {{ optional($k->jenis)->jenis_kost ?? '-' }}
+                                </span>
+                            </div>
 
-                        <!-- Jenis -->
-                        <div class="mt-2">
-                            <span class="badge bg-primary">
-                                {{ optional($k->jenis)->jenis_kost ?? '-' }}
-                            </span>
-                        </div>
+                            <!-- HARGA -->
+                            <h6 class="mt-2">
+                                Rp {{ number_format($k->harga, 0, ',', '.') }}
+                            </h6>
 
-                        <!-- HARGA -->
-                        <h6 class="mt-2">
-                            Rp {{ number_format($k->harga, 0, ',', '.') }}
-                        </h6>
+                            <!-- FASILITAS -->
+                            <div class="mt-2">
+                                @foreach ($k->fasilitas as $f)
+                                <span class="badge bg-success mb-1">
+                                    {{ $f->nama_fasilitas }}
+                                </span>
+                                @endforeach
+                            </div>
 
-                        <!-- FASILITAS -->
-                        <div class="mt-2">
-                            @foreach ($k->fasilitas as $f)
-                            <span class="badge bg-success mb-1">
-                                {{ $f->nama_fasilitas }}
-                            </span>
-                            @endforeach
-                        </div>
+                            <!-- Aksi -->
+                            <div class="mt-3 d-flex gap-2">
 
-                        <!-- Aksi -->
-                        <div class="mt-3 d-flex gap-2">
-
-                            <!-- Modal edit -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#modalEdit{{ $k->id }}">
-                                Edit
-                            </button>
-
-                            <!-- DELETE -->
-                            <form action="{{ route('data-kost.destroy', $k->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus data?')">
-                                    Hapus
+                                <!-- Modal edit -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEdit{{ $k->id }}">
+                                    Edit
                                 </button>
-                            </form>
+
+                                <!-- DELETE -->
+                                <form action="{{ route('data-kost.destroy', $k->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus data?')">
+                                        Hapus
+                                    </button>
+                                </form>
+
+                            </div>
 
                         </div>
-
                     </div>
-                </div>
-
+                </a>
             </div>
             @endforeach
 

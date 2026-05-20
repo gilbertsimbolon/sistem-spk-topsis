@@ -97,7 +97,14 @@ class KostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $kost = Kost::with([
+            'foto',
+            'fasilitas',
+            'jenis',
+            'daerah',
+        ])->findOrFail($id);
+
+        return view('admin.pages.manajemenkost.detail-kost', compact('kost'));
     }
 
     /**

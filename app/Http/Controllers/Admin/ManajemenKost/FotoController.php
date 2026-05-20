@@ -29,16 +29,18 @@ class FotoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $kost)
     {
         $request->validate([
             'foto.*' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $kost = Kost::findOrFail($kostId);
+        $kost = Kost::findOrFail($kost);
 
-        if($request->hasFile('foto')) {
-            foreach($request->file('foto') as $file) {
+        if ($request->hasFile('foto')) {
+
+            foreach ($request->file('foto') as $file) {
+
                 $path = $file->store('kost_foto', 'public');
 
                 $kost->foto()->create([
@@ -47,7 +49,7 @@ class FotoController extends Controller
             }
         }
 
-        return back()->with('success', 'Foto erhasil ditamahkan');
+        return back()->with('success', 'Foto berhasil ditambahkan');
     }
 
     /**
@@ -82,13 +84,13 @@ class FotoController extends Controller
         $foto = FotoKost::findOrFail($id);
 
         // hapus file
-        if(Storage::disk('public')->exists($foto->foto)) {
+        if (Storage::disk('public')->exists($foto->foto)) {
             Storage::disk('public')->delete($foto->foto);
         }
 
         // hapus record dataase
         $foto->delete();
 
-        return back()->with('success','Foto erhasil dihapus');
+        return back()->with('success', 'Foto erhasil dihapus');
     }
 }
