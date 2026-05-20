@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\ManajemenKost;
 
 use App\Http\Controllers\Controller;
+use App\Models\DaerahKost;
 use Illuminate\Http\Request;
 
 class DaerahKostController extends Controller
@@ -12,7 +13,9 @@ class DaerahKostController extends Controller
      */
     public function index()
     {
-        //
+        $daerah = DaerahKost::all();
+
+        return view('admin.pages.manajemenkost.daerah', compact('daerah'));
     }
 
     /**
@@ -28,7 +31,15 @@ class DaerahKostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' = 'required|string|max:255'
+        ]);
+
+        DaerahKost::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('daerah.index')->with('success', 'Daerah berhasil ditambahkan');
     }
 
     /**
@@ -52,7 +63,17 @@ class DaerahKostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        $daerah = DaerahKost::findOrFail($id);
+
+        $daerah->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('daerah.index')->with('success', 'Daerah kost berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +81,10 @@ class DaerahKostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $daerah = DaerahKost::findOrFail($id);
+
+        $daerah->delete();
+
+        return redirect()->route('daerah.index')->with('success', 'Daerah kost berhasil dihapus.');
     }
 }
