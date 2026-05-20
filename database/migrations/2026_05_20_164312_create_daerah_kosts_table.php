@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('daerah_kosts', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->timestamps();
         });
     }

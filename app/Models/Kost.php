@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DaerahKost;
 use App\Models\Fasilitas;
 use App\Models\FotoKost;
 use App\Models\JenisKost;
@@ -20,6 +21,12 @@ class Kost extends Model
         'jenis_kost_id',
         'owner_id',
     ];
+
+    // relasi untuk mengambil daerah kost
+    public function daerah()
+    {
+        return $this->belongsTo(DaerahKost::class, 'daerah_kost_id', 'id');
+    }
 
     // Relasi untuk mengambil jenis kost
     public function jenis()
