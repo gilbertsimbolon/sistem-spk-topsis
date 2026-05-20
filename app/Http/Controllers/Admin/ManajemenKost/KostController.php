@@ -30,7 +30,7 @@ class KostController extends Controller
         $jenis = JenisKost::all();
         $fasilitas = Fasilitas::all();
 
-        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas', 'foto'));
+        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas'));
     }
 
     /**

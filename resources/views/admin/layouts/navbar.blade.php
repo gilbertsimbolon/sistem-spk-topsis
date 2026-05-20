@@ -7,30 +7,13 @@
     </div>
 
     <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
-        <!-- Search -->
-        <div class="navbar-nav align-items-center me-auto">
-            <div class="nav-item d-flex align-items-center">
-                <span class="w-px-22 h-px-22"><i class="icon-base bx bx-search icon-md"></i></span>
-                <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2 d-md-block d-none"
-                    placeholder="Search..." aria-label="Search..." />
-            </div>
-        </div>
-        <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
-            <!-- Place this tag where you want the button to render. -->
-            <li class="nav-item lh-1 me-4">
-                <a class="github-button"
-                    href="https://github.com/themeselection/sneat-bootstrap-html-admin-template-free"
-                    data-icon="octicon-star" data-size="large" data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
-            </li>
-
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                        <h5 class="fw-bold">{{ Auth::user()->name }}</h3>
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -76,9 +59,12 @@
                         <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="javascript:void(0);">
-                            <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
-                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </li>
