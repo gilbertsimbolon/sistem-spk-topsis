@@ -58,11 +58,10 @@
     </li>
 
     <!-- Kriteria Topsis -->
-    <li class="menu-item">
+    <li class="menu-item {{ request()->routeIs('kriteria.*') || request()->routeIs('bobot.*') || request()->routeIs('sub-kriteria.*') || request()->routeIs('penilaian-alternatif.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
             <div class="text-truncate" data-i18n="Front Pages">Kriteria Topsis</div>
-            <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
         </a>
         <ul class="menu-sub">
             <li class="menu-item">
@@ -93,7 +92,7 @@
     </li>
 
     <!-- Manajemen User -->
-    <li class="menu-item">
+    <li class="menu-item {{ request()->routeIs('user.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-user"></i>
 
@@ -135,11 +134,10 @@
     </li>
 
     <!-- Laporan -->
-    <li class="menu-item">
+    <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-file"></i>
             <div class="text-truncate" data-i18n="Front Pages">Laporan Ranking</div>
-            <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
         </a>
         <ul class="menu-sub">
             <li class="menu-item">
