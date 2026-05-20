@@ -5,11 +5,13 @@ use App\Http\Controllers\Admin\ManajemenKost\FasilitasKostController;
 use App\Http\Controllers\Admin\ManajemenKost\FotoController;
 use App\Http\Controllers\Admin\ManajemenKost\JenisKostController;
 use App\Http\Controllers\Admin\ManajemenKost\KostController;
+use App\Http\Controllers\Admin\ManajemenUser\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\ComingSoonController;
 use App\Http\Controllers\Pages\DashboardController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -52,8 +54,9 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Handle Foto
     Route::post('data-kost/{foto}/foto', [FotoController::class, 'store'])->name('kost-foto.store');
-
     Route::delete('/kost-foto/{foto}', [FotoController::class, 'destroy'])->name('kost-foto.destroy');
+
+    Route::resource('/semua-user', UserController::class);
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');
