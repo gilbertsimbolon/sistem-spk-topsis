@@ -8,6 +8,7 @@ use App\Models\FotoKost;
 use App\Models\JenisKost;
 use App\Models\Kost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,12 +19,18 @@ class KostController extends Controller
      */
     public function index()
     {
-        $kost = Kost::with('jenis', 'fasilitas', 'foto')->get();
-        // dd($kost);
+        if (Auth::user()->role == 'owner') {
+            // logika untuk pemilik kos
+            $kosts = Kost::with('jenis', 'fasilitas', 'foto')->where('owner_id', Auth::id())->get();
+        } else {
+            // jika admin bisa melihat semua
+            $kost = Kost::with('jenis', 'fasilitas', 'foto')->get();
+        }
+
         $jenis = JenisKost::all();
         $fasilitas = Fasilitas::all();
 
-        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas'));
+        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas', 'foto'));
     }
 
     /**
@@ -55,6 +62,7 @@ class KostController extends Controller
                 'alamat' => $request->alamat,
                 'harga' => $request->harga,
                 'jenis_kost_id' => $request->jenis_kost_id,
+                'owner_id' => Auth::id(),
             ]);
 
             // fasilitas kost relasi many to many
@@ -106,9 +114,14 @@ class KostController extends Controller
     {
         $kost = Kost::findOrFail($id);
 
+        // owner hanya boleh mengedit punya nya
+        if (Auth::user()->role == 'owner' && $kost->owner_id != Auth::id()) {
+            abort(403);
+        }
+
         DB::beginTransaction();
 
-        try{
+        try {
             // update data kost
             $kost->update([
                 'nama_kost' => $request->nama_kost,
@@ -121,7 +134,7 @@ class KostController extends Controller
             $kost->fasilitas()->sync($request->fasilitas ?? []);
 
             // foto baru (optional)
-             if ($request->hasFile('foto')) {
+            if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
 
                     $path = $file->store('kost', 'public');
@@ -135,7 +148,7 @@ class KostController extends Controller
             DB::commit();
 
             return redirect()->route('data-kost.index')->with('success', 'Data berhasil diperbarui');
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', $e->getMessage());
         }
@@ -147,6 +160,11 @@ class KostController extends Controller
     public function destroy(string $id)
     {
         $kost = Kost::findOrFail($id);
+
+        // owner hanya boleh menghapus punya nya
+        if (Auth::user()->role == 'owner' && $kost->owner_id != Auth::id()) {
+            abort(403);
+        }
 
         // hapus foto dari path
         foreach ($kost->foto as $foto) {
