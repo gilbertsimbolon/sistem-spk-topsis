@@ -29,7 +29,7 @@
         <!-- Manajemen Kost -->
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <i class="menu-icon tf-icons bx bx-buildings"></i>
                 <div class="text-truncate" data-i18n="Layouts">Manajemen Kost</div>
             </a>
 
@@ -51,96 +51,128 @@
                 </li>
                 {{-- <li class="menu-item">
                     <a href="{{ route('foto-kost.index') }}" class="menu-link">
-                        <div class="text-truncate" data-i18n="Container">Foto Kost</div>
-                    </a>
-                </li> --}}
-            </ul>
-        </li>
+                <div class="text-truncate" data-i18n="Container">Foto Kost</div>
+                </a>
+        </li> --}}
+    </ul>
+    </li>
 
-        <!-- Kriteria Topsis -->
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-store"></i>
-                <div class="text-truncate" data-i18n="Front Pages">Kriteria Topsis</div>
-                <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Pricing">Bobot Kriteria</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/payment-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Payment">Sub Kriteria</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/checkout-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Checkout">Penilaian Alternatif</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+    <!-- Kriteria Topsis -->
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+            <div class="text-truncate" data-i18n="Front Pages">Kriteria Topsis</div>
+            <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Pricing">Bobot Kriteria</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/payment-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Payment">Sub Kriteria</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/checkout-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Checkout">Penilaian Alternatif</div>
+                </a>
+            </li>
+        </ul>
+    </li>
 
-        <!-- Manajemen User -->
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-store"></i>
-                <div class="text-truncate" data-i18n="Front Pages">Manajemen User</div>
-                <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Landing">Data User</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Pricing">Admin</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+    <!-- Manajemen User -->
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-user"></i>
 
-        <!-- Laporan -->
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-store"></i>
-                <div class="text-truncate" data-i18n="Front Pages">Laporan Ranking</div>
-                <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Landing">Laporan Data Kost</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Pricing">Statistik Sistem</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <div class="text-truncate">
+                Manajemen User
+            </div>
+        </a>
 
-        <!-- Logout -->
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Logout</span>
-        </li>
+        <ul class="menu-sub">
+
+            <!-- Semua User -->
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <div class="text-truncate">
+                        Semua User
+                    </div>
+                </a>
+            </li>
+
+            <!-- Owner Kost -->
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <div class="text-truncate">
+                        Owner Kost
+                    </div>
+                </a>
+            </li>
+
+            <!-- Admin -->
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <div class="text-truncate">
+                        Data Admin
+                    </div>
+                </a>
+            </li>
+
+        </ul>
+    </li>
+
+    <!-- Laporan -->
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-file"></i>
+            <div class="text-truncate" data-i18n="Front Pages">Laporan Ranking</div>
+            <div class="badge rounded-pill bg-label-primary text-uppercase fs-tiny ms-auto">Pro</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Landing">Laporan Data Kost</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
+                    class="menu-link" target="_blank">
+                    <div class="text-truncate" data-i18n="Pricing">Statistik Sistem</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <!-- Logout -->
+    <li class="menu-item">
+        <form action="#" method="POST">
+            @csrf
+
+            <button type="submit"
+                class="menu-link border-0 bg-transparent w-100 text-start">
+
+                <i class="menu-icon tf-icons bx bx-log-out"></i>
+
+                <div class="text-truncate">
+                    Logout
+                </div>
+
+            </button>
+        </form>
+    </li>
     </ul>
 </aside>
