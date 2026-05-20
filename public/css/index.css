@@ -1,0 +1,55 @@
+.navbar-toogler{
+    display: flex;
+    align-items: center;
+}
+
+.main-content {
+    padding-top: 70px;
+}
+
+.kost-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.kost-card:active {
+    transform: scale(0.98);
+}
+
+.kost-card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 90px;
+    }
+}
+
+.dashboardSwiper .swiper-slide {
+    width: 75%; /* mobile: bikin ada card berikutnya kelihatan */
+}
+
+@media (min-width: 768px) {
+    .dashboardSwiper .swiper-slide {
+        width: 45%;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboardSwiper .swiper-slide {
+        width: 25%;
+    }
+}
+
+.dashboardSwiper {
+    overflow: visible;
+}
+
+.truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: small;
+}
