@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('harga');
             $table->text('deskripsi')->nullable();
             $table->foreignId('jenis_kost_id')->constrained('jenis_kosts')->onDelete('cascade');
+            $table->foreignId('daerah_kost_id')->constrained('daerah_kosts')->onDelete('cascade');
             $table->timestamps();
         });
     }

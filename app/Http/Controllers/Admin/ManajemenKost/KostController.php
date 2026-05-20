@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\ManajemenKost;
 
 use App\Http\Controllers\Controller;
+use App\Models\DaerahKost;
 use App\Models\Fasilitas;
 use App\Models\FotoKost;
 use App\Models\JenisKost;
@@ -19,18 +20,12 @@ class KostController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role == 'owner') {
-            // logika untuk pemilik kos
-            $kosts = Kost::with('jenis', 'fasilitas', 'foto')->where('owner_id', Auth::id())->get();
-        } else {
-            // jika admin bisa melihat semua
-            $kost = Kost::with('jenis', 'fasilitas', 'foto')->get();
-        }
-
+        $kost = Kost::with(['jenis', 'fasilitas', 'foto', 'daerah'])->get();
         $jenis = JenisKost::all();
+        $daerah = DaerahKost::all();
         $fasilitas = Fasilitas::all();
 
-        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas'));
+        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas', 'daerah'));
     }
 
     /**
@@ -51,6 +46,7 @@ class KostController extends Controller
             'alamat' => 'required',
             'harga' => 'required|numeric',
             'jenis_kost_id' => 'required',
+            'daerah_kost_id' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -62,6 +58,7 @@ class KostController extends Controller
                 'alamat' => $request->alamat,
                 'harga' => $request->harga,
                 'jenis_kost_id' => $request->jenis_kost_id,
+                'daerah_kost_id' => $request->daerah_kost_id,
                 'owner_id' => Auth::id(),
             ]);
 
@@ -128,6 +125,7 @@ class KostController extends Controller
                 'alamat' => $request->alamat,
                 'harga' => $request->harga,
                 'jenis_kost_id' => $request->jenis_kost_id,
+                'daerah_kost_id' => $request->daerah_kost_id,
             ]);
 
             // sinkronisasi fasilitas
