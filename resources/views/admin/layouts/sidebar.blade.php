@@ -18,7 +18,7 @@
 
     <ul class="menu-inner py-1">
 
-        <!-- Dashoard -->
+        <!-- Dashboard -->
         <li class="menu-item {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
             <a href="{{ route('admin.dashboard.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-smile"></i>
@@ -56,123 +56,123 @@
                 </li>
             </ul>
         </li>
-    </ul>
-    </li>
 
-    <!-- Kriteria Topsis -->
-    <li class="menu-item {{ request()->routeIs('kriteria.*') || request()->routeIs('bobot.*') || request()->routeIs('sub-kriteria.*') || request()->routeIs('penilaian-alternatif.*') ? 'active open' : '' }}">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
-            <div class="text-truncate" data-i18n="Front Pages">Kriteria Topsis</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Pricing">Bobot Kriteria</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/payment-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Payment">Sub Kriteria</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/checkout-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Checkout">Penilaian Alternatif</div>
-                </a>
-            </li>
-        </ul>
-    </li>
 
-    <!-- Manajemen User -->
-    <li class="menu-item {{ request()->routeIs('user.*') || request()->routeIs('owner.*') || request()->routeIs('admin.*') ? 'active open' : '' }}">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-user"></i>
 
-            <div class="text-truncate">
-                Manajemen User
-            </div>
-        </a>
+        <!-- Kriteria Topsis -->
+        <li class="menu-item {{ request()->routeIs('kriteria.*') || request()->routeIs('bobot.*') || request()->routeIs('sub-kriteria.*') || request()->routeIs('penilaian-alternatif.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+                <div class="text-truncate" data-i18n="Front Pages">Kriteria Topsis</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Pricing">Bobot Kriteria</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/payment-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Payment">Sub Kriteria</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/checkout-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Checkout">Penilaian Alternatif</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
-        <ul class="menu-sub">
-
-            <!-- Semua User -->
-            <li class="menu-item">
-                <a href="{{ route('semua-user.index') }}" class="menu-link">
-                    <div class="text-truncate">
-                        Semua User
-                    </div>
-                </a>
-            </li>
-
-            <!-- Owner Kost -->
-            <li class="menu-item">
-                <a href="{{ route('owner.index') }}" class="menu-link">
-                    <div class="text-truncate">
-                        Owner Kost
-                    </div>
-                </a>
-            </li>
-
-            <!-- Admin -->
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <div class="text-truncate">
-                        Data Admin
-                    </div>
-                </a>
-            </li>
-
-        </ul>
-    </li>
-
-    <!-- Laporan -->
-    <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-file"></i>
-            <div class="text-truncate" data-i18n="Front Pages">Laporan Ranking</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Landing">Laporan Data Kost</div>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                    class="menu-link" target="_blank">
-                    <div class="text-truncate" data-i18n="Pricing">Statistik Sistem</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-
-    <!-- Logout -->
-    <li class="menu-item">
-        <form action="#" method="POST">
-            @csrf
-
-            <button type="submit"
-                class="menu-link border-0 bg-transparent w-100 text-start">
-
-                <i class="menu-icon tf-icons bx bx-log-out"></i>
+        <!-- Manajemen User -->
+        <li class="menu-item {{ request()->routeIs('user.*') || request()->routeIs('owner.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-user"></i>
 
                 <div class="text-truncate">
-                    Logout
+                    Manajemen User
                 </div>
+            </a>
 
-            </button>
-        </form>
-    </li>
+            <ul class="menu-sub">
+
+                <!-- Semua User -->
+                <li class="menu-item">
+                    <a href="{{ route('semua-user.index') }}" class="menu-link">
+                        <div class="text-truncate">
+                            Semua User
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Owner Kost -->
+                <li class="menu-item">
+                    <a href="{{ route('owner.index') }}" class="menu-link">
+                        <div class="text-truncate">
+                            Owner Kost
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Admin -->
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div class="text-truncate">
+                            Data Admin
+                        </div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <!-- Laporan -->
+        <li class="menu-item {{ request()->routeIs('laporan.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div class="text-truncate" data-i18n="Front Pages">Laporan Ranking</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Landing">Laporan Data Kost</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
+                        class="menu-link" target="_blank">
+                        <div class="text-truncate" data-i18n="Pricing">Statistik Sistem</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Logout -->
+        <li class="menu-item">
+            <form action="#" method="POST">
+                @csrf
+
+                <button type="submit"
+                    class="menu-link border-0 bg-transparent w-100 text-start">
+
+                    <i class="menu-icon tf-icons bx bx-log-out"></i>
+
+                    <div class="text-truncate">
+                        Logout
+                    </div>
+
+                </button>
+            </form>
+        </li>
     </ul>
 </aside>
