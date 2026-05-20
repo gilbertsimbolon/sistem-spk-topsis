@@ -7,16 +7,16 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class OwnerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::where('role', 'user')->paginate(20);
+        $owners = User::where('role', 'owner')->paginate(20);
 
-        return view('admin.pages.manajemenuser.user', compact('users'));
+        return view('admin.pages.manajemenuser.owner', compact('owners'));
     }
 
     /**
@@ -34,26 +34,25 @@ class UserController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'fakultas' => 'required',
             'email' => 'required|unique:users,email',
             'password' => 'required|min:8',
         ]);
 
-        // Jika validasi gagal.
+        // jika validasi gagal
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
-        // Buat user baru dengan role 'user'
+        // buat user baru dengan role 'owner'
         User::create([
             'name' => $request->name,
-            'fakultas' => $request->fakultas,
+            'fakultas' => null,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 'user',
+            'role' => 'owner',
         ]);
 
-        return redirect()->route('semua-user.index')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('owner.index')->with('success', 'Owner berhasil ditambahkan.');
     }
 
     /**
@@ -77,35 +76,33 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $users = User::findOrFail($id);
+        $owners = User::findOrFail($id);
 
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'fakultas' => 'required',
-            'email' => 'required|unique:users,email,'. $users->id,
+            'email' => 'required|unique:users,email,' . $owners->id,
             'password' => 'nullable|min:8',
         ]);
 
-        // Jika validasi gagal.
+        // jika validasi gagal
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
-        // Jika berhasil
+        // jika berhasil
         $data = [
             'name' => $request->name,
-            'fakultas' => $request->fakultas,
             'email' => $request->email,
         ];
 
-        // update password jika diisi
-        if ($request->password) {
+        // jika update password
+        if($request->password) {
             $data['password'] = bcrypt($request->password);
         }
 
-        $users->update($data);
+        $owners->update($data);
 
-        return redirect()->back()->with('success', 'Data berhasil diperbarui');
+        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -113,9 +110,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $users = User::findOrFail($id);
-        $users->delete();
+        $owners = User::findOrFail($id);
+        $owners->delete();
 
-        return redirect()->back()->with('success', 'User berhasil dihapus.');
+        return redirect()->back()->with('success', 'Owner berhasil dihapus.');
     }
 }

@@ -92,7 +92,7 @@
     </li>
 
     <!-- Manajemen User -->
-    <li class="menu-item {{ request()->routeIs('user.*') ? 'active open' : '' }}">
+    <li class="menu-item {{ request()->routeIs('user.*') || request()->routeIs('owner.*') || request()->routeIs('admin.*') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-user"></i>
 
@@ -114,7 +114,7 @@
 
             <!-- Owner Kost -->
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a href="{{ route('owner.index') }}" class="menu-link">
                     <div class="text-truncate">
                         Owner Kost
                     </div>

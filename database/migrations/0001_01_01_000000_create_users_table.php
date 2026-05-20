@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('fakultas', ['fatek', 'feb', 'fikkm', 'fish', 'fipp', 'fke', 'fbs']);
+            $table->enum('fakultas', ['fatek', 'feb', 'fikkm', 'fish', 'fipp', 'fke', 'fbs'])->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

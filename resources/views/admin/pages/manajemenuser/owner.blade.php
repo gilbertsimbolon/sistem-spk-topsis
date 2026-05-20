@@ -1,29 +1,16 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Semua User | SIPKOS')
+@section('title', 'Owner | SIPKOS')
 
 @section('content')
-
-<!-- helper untuk mengubah data dari kolom fakultas -->
-@php
-$fakultasList = [
-'fatek' => 'Teknik',
-'fish' => 'Ilmu Sosial dan Hukum',
-'feb' => 'Ekonomi dan Bisnis',
-'fikkm' => 'Ilmu Keolahragaan dan Kesehatan Masyarakat',
-'fbs' => 'Bahasa dan Seni',
-'fipp' => 'Ilmu Pendidikan dan Psikologi',
-'fke' => 'Kedokteran',
-];
-@endphp
 
 <!-- Tabel Utama -->
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Semua User</h5>
+        <h5 class="mb-0">Owner</h5>
 
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCreate">
-            + Tambah User
+            + Tambah Owner
         </button>
     </div>
 
@@ -33,7 +20,6 @@ $fakultasList = [
                 <tr>
                     <th>No.</th>
                     <th>Nama</th>
-                    <th>Fakultas</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Actions</th>
@@ -41,33 +27,28 @@ $fakultasList = [
             </thead>
             <tbody class="table-border-bottom-0">
 
-                @forelse ($users as $user)
+                @forelse ($owners as $owner)
                 <tr>
 
                     <!-- Iterasi -->
                     <td>
-                        {{ $users->firstItem() + $loop->index }}
+                        {{ $owners->firstItem() + $loop->index }}
                     </td>
 
                     <!-- Nama -->
                     <td>
-                        <strong>{{ $user->name }}</strong>
-                    </td>
-
-                    <!-- Fakultas -->
-                    <td>
-                        {{ $fakultasList[$user->fakultas] ?? '-' }}
+                        <strong>{{ $owner->name }}</strong>
                     </td>
 
                     <!-- Email -->
                     <td>
-                        {{ $user->email }}
+                        {{ $owner->email }}
                     </td>
 
                     <!-- Role -->
                     <td>
                         <span class="badge bg-label-primary">
-                            {{ ucfirst($user->role) }}
+                            {{ ucfirst($owner->role) }}
                         </span>
                     </td>
 
@@ -85,13 +66,13 @@ $fakultasList = [
 
                             <div class="dropdown-menu">
 
-                                <a class="dropdown-item" href="{{ route('semua-user.update', $user->id) }}" data-bs-toggle="modal"
-                                    data-bs-target="#modalEdit{{ $user->id }}">
+                                <a class="dropdown-item" href="{{ route('owner.update', $owner->id) }}" data-bs-toggle="modal"
+                                    data-bs-target="#modalEdit{{ $owner->id }}">
                                     <i class="icon-base bx bx-edit-alt me-1"></i>
                                     Edit
                                 </a>
 
-                                <form action="{{ route('semua-user.destroy', $user->id) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('owner.destroy', $owner->id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="dropdown-item">
@@ -110,7 +91,7 @@ $fakultasList = [
 
                 <tr>
                     <td colspan="5" class="text-center py-4">
-                        Tidak ada data user
+                        Tidak ada data owner
                     </td>
                 </tr>
 
@@ -119,7 +100,7 @@ $fakultasList = [
             </tbody>
         </table>
         <div class="d-flex justify-content-end mt-4 px-3">
-            {{ $users->links() }}
+            {{ $owners->links() }}
         </div>
     </div>
 </div>
@@ -129,12 +110,12 @@ $fakultasList = [
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-            <form action="{{ route('semua-user.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('owner.store') }}" method="POST" enctype="multipart/form-data">
 
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah User</h5>
+                    <h5 class="modal-title">Tambah Owner</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -153,57 +134,6 @@ $fakultasList = [
                                 aria-label="John Doe"
                                 aria-describedby="basic-icon-default-fullname2" />
                         </div>
-                    </div>
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Fakultas
-                        </label>
-
-                        <div class="input-group input-group-merge">
-
-                            <span class="input-group-text">
-                                <i class="icon-base bx bx-buildings"></i>
-                            </span>
-
-                            <select
-                                name="fakultas"
-                                class="form-select">
-
-                                <option value="">Pilih Fakultas</option>
-
-                                <option value="fatek">
-                                    Fakultas Teknik
-                                </option>
-
-                                <option value="fish">
-                                    Fakultas Ilmu Sosial dan Hukum
-                                </option>
-
-                                <option value="feb">
-                                    Fakultas Ekonomi dan Bisnis
-                                </option>
-
-                                <option value="fikkm">
-                                    Fakultas Ilmu Keolahragaan dan Kesehatan Masyarakat
-                                </option>
-
-                                <option value="fbs">
-                                    Fakultas Bahasa dan Seni
-                                </option>
-
-                                <option value="fipp">
-                                    Fakultas Ilmu Pendidikan dan Psikologi
-                                </option>
-
-                                <option value="fke">
-                                    Fakultas Kedokteran
-                                </option>
-
-                            </select>
-
-                        </div>
-
                     </div>
                     <div class="mb-6">
                         <label class="form-label" for="basic-icon-default-email" name="email">Email</label>
@@ -237,10 +167,10 @@ $fakultasList = [
 
                             <input type="text"
                                 class="form-control"
-                                value="User"
+                                value="Owner"
                                 disabled>
 
-                            <input type="hidden" name="role" value="user">
+                            <input type="hidden" name="role" value="owner">
                         </div>
                     </div>
                 </div>
@@ -256,18 +186,18 @@ $fakultasList = [
 </div>
 
 <!-- Modal Edit Data -->
-@foreach ($users as $u)
-<div class="modal fade" id="modalEdit{{ $u->id }}" tabindex="-1">
+@foreach ($owners as $o)
+<div class="modal fade" id="modalEdit{{ $o->id }}" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-            <form action="{{ route('semua-user.update', $u->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('owner.update', $o->id) }}" method="POST" enctype="multipart/form-data">
 
                 @csrf
                 @method('PUT')
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit User</h5>
+                    <h5 class="modal-title">Edit Owner</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -282,62 +212,11 @@ $fakultasList = [
                                 name="name"
                                 class="form-control"
                                 id="basic-icon-default-fullname"
-                                placeholder="{{$u->name}}"
-                                value="{{$u->name}}"
+                                placeholder="{{$o->name}}"
+                                value="{{$o->name}}"
                                 aria-label="John Doe"
                                 aria-describedby="basic-icon-default-fullname2" />
                         </div>
-                    </div>
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Fakultas
-                        </label>
-
-                        <div class="input-group input-group-merge">
-
-                            <span class="input-group-text">
-                                <i class="icon-base bx bx-buildings"></i>
-                            </span>
-
-                            <select
-                                name="fakultas"
-                                class="form-select">
-
-                                <option value="">Pilih Fakultas</option>
-
-                                <option value="fatek" {{ $u->fakultas == 'fatek' ? 'selected' : '' }}>
-                                    Fakultas Teknik
-                                </option>
-
-                                <option value="fish" {{ $u->fakultas == 'fish' ? 'selected' : '' }}>
-                                    Fakultas Ilmu Sosial dan Hukum
-                                </option>
-
-                                <option value="feb" {{ $u->fakultas == 'feb' ? 'selected' : '' }}>
-                                    Fakultas Ekonomi dan Bisnis
-                                </option>
-
-                                <option value="fikkm" {{ $u->fakultas == 'fikkm' ? 'selected' : '' }}>
-                                    Fakultas Ilmu Keolahragaan dan Kesehatan Masyarakat
-                                </option>
-
-                                <option value="fbs" {{ $u->fakultas == 'fbs' ? 'selected' : '' }}>
-                                    Fakultas Bahasa dan Seni
-                                </option>
-
-                                <option value="fipp" {{ $u->fakultas == 'fipp' ? 'selected' : '' }}>
-                                    Fakultas Ilmu Pendidikan dan Psikologi
-                                </option>
-
-                                <option value="fke" {{ $u->fakultas == 'fke' ? 'selected' : '' }}>
-                                    Fakultas Kedokteran
-                                </option>
-
-                            </select>
-
-                        </div>
-
                     </div>
                     <div class="mb-6">
                         <label class="form-label" for="basic-icon-default-email" name="email">Email</label>
@@ -348,9 +227,9 @@ $fakultasList = [
                                 name="email"
                                 id="basic-icon-default-email"
                                 class="form-control"
-                                placeholder="{{$u->email}}"
-                                value="{{$u->email}}"
-                                aria-label="{{$u->email}}"
+                                placeholder="{{$o->email}}"
+                                value="{{$o->email}}"
+                                aria-label="{{$o->email}}"
                                 aria-describedby="basic-icon-default-email2" />
                         </div>
                     </div>
@@ -372,10 +251,10 @@ $fakultasList = [
 
                             <input type="text"
                                 class="form-control"
-                                value="User"
+                                value="Owner"
                                 disabled>
 
-                            <input type="hidden" name="role" value="user">
+                            <input type="hidden" name="role" value="owner">
                         </div>
                     </div>
                 </div>
