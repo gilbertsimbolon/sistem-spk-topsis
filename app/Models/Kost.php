@@ -19,6 +19,7 @@ class Kost extends Model
         'harga',
         'deskripsi',
         'jenis_kost_id',
+        'daerah_kost_id',
         'owner_id',
     ];
 

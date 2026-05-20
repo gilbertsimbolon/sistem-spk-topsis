@@ -27,7 +27,7 @@
         </li>
 
         <!-- Manajemen Kost -->
-        <li class="menu-item {{ request()->routeIs('data-kost.*') || request()->routeIs('fasilitas.*') || request()->routeIs('jenis-kost.*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->routeIs('data-kost.*') || request()->routeIs('fasilitas.*') || request()->routeIs('jenis-kost.*') || request()->routeIs('daerah.index') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-buildings"></i>
                 <div class="text-truncate" data-i18n="Layouts">Manajemen Kost</div>
@@ -51,7 +51,7 @@
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('daerah.index') }}" class="menu-link">
-                        <div class="text-truncate" data-i18n="Container">Daerah Kost</div>
+                        <div class="text-truncate" data-i18n="Fluid">Daerah Kost</div>
                     </a>
                 </li>
             </ul>

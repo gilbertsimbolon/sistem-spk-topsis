@@ -21,11 +21,13 @@ class KostController extends Controller
     public function index()
     {
         $kost = Kost::with(['jenis', 'fasilitas', 'foto', 'daerah'])->get();
+        // dd($kost);
         $jenis = JenisKost::all();
         $daerah = DaerahKost::all();
         $fasilitas = Fasilitas::all();
+        $foto = FotoKost::all();
 
-        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas', 'daerah'));
+        return view('admin.pages.manajemenkost.data-kost', compact('kost', 'jenis', 'fasilitas', 'daerah', 'foto'));
     }
 
     /**
@@ -48,6 +50,8 @@ class KostController extends Controller
             'jenis_kost_id' => 'required',
             'daerah_kost_id' => 'required',
         ]);
+
+        // dd($request->all());
 
         DB::beginTransaction();
 
@@ -111,11 +115,6 @@ class KostController extends Controller
     {
         $kost = Kost::findOrFail($id);
 
-        // owner hanya boleh mengedit punya nya
-        if (Auth::user()->role == 'owner' && $kost->owner_id != Auth::id()) {
-            abort(403);
-        }
-
         DB::beginTransaction();
 
         try {
@@ -158,11 +157,6 @@ class KostController extends Controller
     public function destroy(string $id)
     {
         $kost = Kost::findOrFail($id);
-
-        // owner hanya boleh menghapus punya nya
-        if (Auth::user()->role == 'owner' && $kost->owner_id != Auth::id()) {
-            abort(403);
-        }
 
         // hapus foto dari path
         foreach ($kost->foto as $foto) {

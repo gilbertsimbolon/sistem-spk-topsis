@@ -42,7 +42,7 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
     })->name('admin.dashboard.index');
 
     // Halaman Data Kost
-    Route::resource('/data-kost', KostController::class)->middleware('role:owner');
+    Route::resource('/data-kost', KostController::class);
 
     // Halaman Fasilitas Kost
     Route::resource('/fasilitas', FasilitasKostController::class);
@@ -62,10 +62,6 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Halaman Owner 
     Route::resource('/owner', OwnerController::class);
-});
-
-Route::prefix('/owner')->middleware(['auth', 'role:owner'])->as('owner.')->group(function () {
-    Route::resource('/data-kost', KostController::class);
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');

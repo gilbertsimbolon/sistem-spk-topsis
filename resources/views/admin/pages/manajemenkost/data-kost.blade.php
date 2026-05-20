@@ -4,9 +4,6 @@
 
 @section('content')
 
-<!-- tampilan data kost untuk admin -->
-@if (auth()->user()->role == 'admin')
-
 <!-- Tampilan Data Kost -->
 <div class="card mb-4">
 
@@ -46,7 +43,7 @@
                         <h5 class="mb-1">{{ $k->nama_kost }}</h5>
 
                         <!-- ALAMAT -->
-                        <small class="text-muted">{{ $k->alamat }}</small>
+                        <small class="text-muted">{{ $k->daerah->name ?? '-' }}</small>
 
                         <!-- Jenis -->
                         <div class="mt-2">
@@ -133,6 +130,15 @@
                         @endforeach
                     </select>
 
+                    <!-- Daerah -->
+                    <select name="daerah_kost_id" class="form-control mb-2">
+                        @foreach ($daerah as $d)
+                        <option value="{{ $d->id }}">
+                            {{ $d->name }}
+                        </option>
+                        @endforeach
+                    </select>
+
                     <!-- Fasilitas -->
                     <label class="mb-1">Fasilitas</label><br>
                     @foreach ($fasilitas as $f)
@@ -194,6 +200,15 @@
                         @endforeach
                     </select>
 
+                    {{-- Daerah Kost --}}
+                    <select name="daerah_kost_id" class="form-control mb-2">
+                        @foreach ($daerah as $d)
+                        <option value="{{ $d->id }}" @if ($k->daerah_kost_id == $d->id) selected @endif>
+                            {{ $d->name }}
+                        </option>
+                        @endforeach
+                    </select>
+
                     {{-- Fasilitas --}}
                     <label class="mb-1">Fasilitas</label><br>
                     @foreach ($fasilitas as $f)
@@ -247,119 +262,6 @@
 </div>
 @endforeach
 
-@elseif(auth()->user()->role == 'owner')
-<!-- Tampilan Data Kost untuk Owner -->
-<div class="card">
-
-    <div class="card-header d-flex justify-content-between align-items-center">
-
-        <div>
-            <h5 class="mb-0">Kost Saya</h5>
-            <small class="text-muted">
-                Kelola kost milik anda
-            </small>
-        </div>
-
-        <button
-            class="btn btn-primary btn-sm"
-            data-bs-toggle="modal"
-            data-bs-target="#modalCreate">
-
-            + Tambah Kost
-
-        </button>
-
-    </div>
-
-    <div class="card-body">
-
-        <div class="row">
-
-            @forelse($kost as $k)
-
-            <div class="col-md-6 col-lg-4 mb-4">
-
-                <div class="card border shadow-sm h-100">
-
-                    {{-- foto --}}
-                    @if ($k->foto->count())
-                    <img
-                        src="{{ asset('storage/' . $k->foto->first()->foto) }}"
-                        class="card-img-top"
-                        style="height:200px; object-fit:cover;">
-                    @endif
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
-                            {{ $k->nama_kost }}
-                        </h5>
-
-                        <p class="text-muted small">
-                            {{ $k->alamat }}
-                        </p>
-
-                        <h6 class="text-primary">
-                            Rp {{ number_format($k->harga, 0, ',', '.') }}
-                        </h6>
-
-                        <div class="mt-3 d-flex gap-2">
-
-                            <button
-                                class="btn btn-warning btn-sm w-100"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEdit{{ $k->id }}">
-                                Edit
-                            </button>
-
-                            <form
-                                action="{{ route('data-kost.destroy', $k->id) }}"
-                                method="POST"
-                                class="w-100">
-
-                                @csrf
-                                @method('DELETE')
-
-                                <button
-                                    class="btn btn-danger btn-sm w-100"
-                                    onclick="return confirm('Yakin hapus kost?')">
-
-                                    Hapus
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            @empty
-
-            <div class="text-center py-5">
-
-                <h6 class="mb-2">
-                    Belum ada kost
-                </h6>
-
-                <small class="text-muted">
-                    Silahkan tambahkan kost pertama anda
-                </small>
-
-            </div>
-
-            @endforelse
-
-        </div>
-
-    </div>
-
-</div>
-@endif
 <script>
     const newFotos = {}; // menampung file baru per kostId
 
@@ -404,16 +306,5 @@
         // kosongkan input supaya bisa pilih ulang
         input.value = '';
     }
-
-    // pasang event listener untuk semua input file
-    @foreach($kost as $k)
-    document.getElementById('foto-new-{{ $k->id }}').addEventListener('change', function() {
-        handleNewFoto(this, {
-            {
-                $k - > id
-            }
-        });
-    });
-    @endforeach
 </script>
 @endsection
