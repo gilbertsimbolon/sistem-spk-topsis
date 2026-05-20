@@ -1,37 +1,37 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Jenis Kost')
+@section('title', 'Daerah Kost | SIPKOS')
 
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Jenis Kost</h5>
-        <!-- Button Tambah Jenis Kost -->
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJenisModal">Tambah Jenis</button>
+        <h5>Daerah Kost</h5>
+        <!-- Button Tambah Daerah Kost -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDaerahModal">Tambah Daerah</button>
     </div>
 
     <div class="card-body">
-        <!-- Tabel Jenis Kost -->
+        <!-- Tabel Daerah Kost -->
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Nama Jenis</th>
+                    <th>Nama Daerah</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($jenis as $key => $j)
+                @foreach($daerah as $key => $d)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $j->jenis_kost }}</td>
+                    <td>{{ $d->name }}</td>
                     <td>
                         <!-- Button Edit -->
                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                            data-bs-target="#editJenisModal{{ $j->id }}">Edit</button>
+                            data-bs-target="#editDaerahModal{{ $d->id }}">Edit</button>
 
                         <!-- Form Hapus -->
-                        <form action="{{ route('jenis-kost.destroy', $j->id) }}" method="POST" class="d-inline">
+                        <form action="{{ route('daerah.destroy', $d->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger"
@@ -41,18 +41,18 @@
                 </tr>
 
                 <!-- Modal Edit -->
-                <div class="modal fade" id="editJenisModal{{ $j->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="editDaerahModal{{ $d->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
-                        <form action="{{ route('jenis-kost.update', $j->id) }}" method="POST">
+                        <form action="{{ route('daerah.update', $d->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Edit Jenis Kost</h5>
+                                    <h5 class="modal-title">Edit Daerah Kost</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <input type="text" name="jenis_kost" class="form-control" value="{{ $j->jenis_kost }}" required>
+                                    <input type="text" name="name" class="form-control" value="{{ $d->name }}" required>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -68,18 +68,18 @@
     </div>
 </div>
 
-<!-- Modal Tambah Jenis Kost -->
-<div class="modal fade" id="addJenisModal" tabindex="-1" aria-hidden="true">
+<!-- Modal Tambah Daerah Kost -->
+<div class="modal fade" id="addDaerahModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('jenis-kost.store') }}" method="POST">
+        <form action="{{ route('daerah.store') }}" method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Jenis Kost</h5>
+                    <h5 class="modal-title">Tambah Daerah Kost</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="jenis_kost" class="form-control" placeholder="Nama Jenis Kost" required>
+                    <input type="text" name="name" class="form-control" placeholder="Nama Daerah Kost" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

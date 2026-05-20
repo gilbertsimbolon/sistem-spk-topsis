@@ -49,11 +49,13 @@
                         <div class="text-truncate" data-i18n="Fluid">Jenis Kost</div>
                     </a>
                 </li>
-                {{-- <li class="menu-item">
-                    <a href="{{ route('foto-kost.index') }}" class="menu-link">
-                <div class="text-truncate" data-i18n="Container">Foto Kost</div>
-                </a>
-        </li> --}}
+                <li class="menu-item">
+                    <a href="{{ route('daerah.index') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Container">Daerah Kost</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
     </li>
 
