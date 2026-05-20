@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\Admin\FasilitasKostController;
-use App\Http\Controllers\Admin\FotoController;
-use App\Http\Controllers\Admin\JenisKostController;
 use App\Http\Controllers\Admin\KostController as AdminKostController;
-use App\Http\Controllers\Admin\KostController;
+use App\Http\Controllers\Admin\ManajemenKost\FasilitasKostController;
+use App\Http\Controllers\Admin\ManajemenKost\FotoController;
+use App\Http\Controllers\Admin\ManajemenKost\JenisKostController;
+use App\Http\Controllers\Admin\ManajemenKost\KostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\ComingSoonController;
 use App\Http\Controllers\Pages\DashboardController;
 use Illuminate\Support\Facades\Route;
+
+
+
+
 
 // Route Landing Page
 Route::get('/', function () {

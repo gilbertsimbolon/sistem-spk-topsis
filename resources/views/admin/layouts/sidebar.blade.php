@@ -19,15 +19,15 @@
     <ul class="menu-inner py-1">
 
         <!-- Dashoard -->
-        <li class="menu-item active open">
-            <a href="javascript:void(0);" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-smile"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Dashboard</div>
             </a>
         </li>
 
         <!-- Manajemen Kost -->
-        <li class="menu-item">
+        <li class="menu-item {{ request()->routeIs('data-kost.*') || request()->routeIs('fasilitas.*') || request()->routeIs('jenis-kost.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-buildings"></i>
                 <div class="text-truncate" data-i18n="Layouts">Manajemen Kost</div>
