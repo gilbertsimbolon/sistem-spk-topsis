@@ -3,6 +3,21 @@
 @section('title', 'Data Kriteria | SIPKOS')
 
 @section('content')
+<!-- Session -->
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Sukses!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Gagal!</strong> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Data Kriteria TOPSIS</h5>
@@ -14,6 +29,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Kode Kriteria</th>
                     <th>Nama Kriteria</th>
                     <th>Tipe</th>
                     <th class="text-center">Bobot</th>
@@ -24,6 +40,7 @@
                 @foreach($criteria as $key => $c)
                 <tr>
                     <td>{{ $key + 1 }}</td>
+                    <td>{{ $c->kode_kriteria }}</td>
                     <td>{{ $c->nama_kriteria }}</td>
                     <td>
                         @if($c->tipe == 'benefit')
@@ -58,6 +75,10 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
+                                        <label class="form-label">Kode Kriteria</label>
+                                        <input type="text" name="kode_kriteria" class="form-control" value="{{ $c->kode_kriteria }}" required>
+                                    </div>
+                                    <div class="mb-3">
                                         <label class="form-label">Nama Kriteria</label>
                                         <input type="text" name="nama_kriteria" class="form-control" value="{{ $c->nama_kriteria }}" required>
                                     </div>
@@ -84,6 +105,16 @@
                 @endforeach
             </tbody>
         </table>
+
+        <!-- note -->
+        <div class="mt-3">
+            <small class="text-muted d-block">
+                <strong>Keterangan Skala Bobot:</strong>
+            </small>
+            <small class="text-muted d-block">
+                1 = Tidak Penting, 2 = Kurang Penting, 3 = Cukup Penting, 4 = Penting, 5 = Sangat Penting
+            </small>
+        </div>
     </div>
 </div>
 
@@ -98,6 +129,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label class="form-label">Kode Kriteria</label>
+                        <input type="text" name="kode_kriteria" class="form-control" placeholder="Contoh: C1, C2, C3" required>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Nama Kriteria</label>
                         <input type="text" name="nama_kriteria" class="form-control" placeholder="Contoh: Harga, Jarak, Fasilitas" required>
                     </div>
@@ -111,7 +146,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Bobot Kriteria</label>
-                        <input type="number" step="any" name="bobot" class="form-control" placeholder="Contoh: 0.3 atau 30" required>
+                        <input type="number" step="any" name="bobot" class="form-control" placeholder="1-5" required>
                     </div>
                 </div>
                 <div class="modal-footer">

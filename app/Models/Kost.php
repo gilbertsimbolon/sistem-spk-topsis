@@ -52,4 +52,10 @@ class Kost extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    // relasi ke penilaian alternatif
+    public function penilaianAlternatif()
+    {
+        return $this->hasMany(PenilaianAlternatif::class, 'kost_id');
+    }
 }

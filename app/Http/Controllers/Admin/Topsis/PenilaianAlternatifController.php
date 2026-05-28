@@ -17,7 +17,7 @@ class PenilaianAlternatifController extends Controller
     public function index()
     {
         // ambil kost dengan relasi ke penilaian alternatif
-        $kosts = Kost::with('penilaianAlternatifs')->get();
+        $kosts = Kost::with('penilaianAlternatif')->get();
         
         // ambil kriteria 
         $criterias = Criteria::whereNotIn(DB::raw('LOWER(nama_kriteria)'), ['harga', 'fasilitas'])

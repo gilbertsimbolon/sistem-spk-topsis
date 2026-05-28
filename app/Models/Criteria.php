@@ -12,6 +12,7 @@ class Criteria extends Model
     use HasFactory;
 
     protected $fillable = [
+        'kode_kriteria',
         'nama_kriteria',
         'tipe',
         'bobot',

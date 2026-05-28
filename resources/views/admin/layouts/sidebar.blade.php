@@ -85,9 +85,9 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/checkout-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Checkout">Penilaian Alternatif</div>
+                    <a href="{{ route('topsis.hitung') }}"
+                        class="menu-link">
+                        <div class="text-truncate">Perhitungan</div>
                     </a>
                 </li>
             </ul>

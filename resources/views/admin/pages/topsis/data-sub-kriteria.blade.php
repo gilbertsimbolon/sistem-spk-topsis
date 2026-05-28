@@ -10,7 +10,7 @@
     </div>
 
     <div class="card-body">
-        <table class="table table-striped">
+        <table class="table table-striped align-middle">
             <thead>
                 <tr>
                     <th>#</th>
@@ -24,7 +24,6 @@
                 @foreach($subCriterias as $key => $s)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    {{-- Mengambil nama kriteria dari relasi model --}}
                     <td><span class="fw-bold text-secondary">{{ $s->criteria->nama_kriteria }}</span></td>
                     <td>{{ $s->nama_sub_kriteria }}</td>
                     <td><span class="badge bg-primary">{{ $s->nilai }}</span></td>
@@ -53,22 +52,17 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label class="form-label">Pilih Kriteria</label>
-                                        <select name="criteria_id" class="form-select" required>
-                                            @foreach($criterias as $c)
-                                                <option value="{{ $c->id }}" {{ $s->criteria_id == $c->id ? 'selected' : '' }}>
-                                                    {{ $c->nama_kriteria }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <label class="form-label">Nama Kriteria Utama</label>
+                                        <input type="text" class="form-control" value="{{ $s->criteria->nama_kriteria }}" disabled>
+                                        <input type="hidden" name="criteria_id" value="{{ $s->criteria_id }}">
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Nama Sub Kriteria</label>
+                                        <label class="form-label">Nama Sub Kriteria / Item</label>
                                         <input type="text" name="nama_sub_kriteria" class="form-control" value="{{ $s->nama_sub_kriteria }}" required>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Nilai / Bobot Sub</label>
-                                        <input type="number" step="any" name="nilai" class="form-control" value="{{ $s->nilai }}" placeholder="Contoh: 1 sampai 5" required>
+                                        <input type="number" step="any" name="nilai" class="form-control" value="{{ $s->nilai }}" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -97,20 +91,33 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Pilih Kriteria Utama</label>
-                        <select name="criteria_id" class="form-select" required>
+                        <select name="criteria_id" id="selectKriteriaUtama" class="form-select" required>
                             <option value="" disabled selected>-- Pilih Kriteria --</option>
                             @foreach($criterias as $c)
-                                <option value="{{ $c->id }}">{{ $c->nama_kriteria }}</option>
+                                <option value="{{ $c->id }}" data-nama="{{ strtolower($c->nama_kriteria) }}">{{ $c->nama_kriteria }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-3">
+
+                    <div class="mb-3" id="inputManualWrapper">
                         <label class="form-label">Nama Sub Kriteria</label>
-                        <input type="text" name="nama_sub_kriteria" class="form-control" placeholder="Contoh: < 1 Km, Sangat Murah, dll" required>
+                        <input type="text" name="nama_sub_kriteria_manual" id="namaSubManual" class="form-control" placeholder="Contoh: < 1 Km, Sangat Murah, dll">
                     </div>
+
+                    <div class="mb-3 d-none" id="inputFasilitasWrapper">
+                        <label class="form-label">Pilih Item Fasilitas Master</label>
+                        <select name="nama_sub_kriteria_fasilitas" id="namaSubFasilitas" class="form-select">
+                            <option value="" disabled selected>-- Pilih Fasilitas --</option>
+                            @foreach($fasilitas as $f)
+                                <option value="{{ $f->nama }}">{{ $f->nama }}</option>
+                            @endforeach
+                        </select>
+                        <small class="text-muted d-block mt-1">💡 List ini diambil otomatis dari tabel master fasilitas kamu.</small>
+                    </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Nilai (Skala Crisp)</label>
-                        <input type="number" step="any" name="nilai" class="form-control" placeholder="Contoh: 5 (Sangat Baik), 1 (Buruk)" required>
+                        <label class="form-label">Nilai (Skala 1 - 5)</label>
+                        <input type="number" step="any" name="nilai" class="form-control" placeholder="Contoh: 5 (Sangat Penting), 1 (Biasa)" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -121,4 +128,35 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('selectKriteriaUtama').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        var namaKriteria = selectedOption.getAttribute('data-nama');
+        
+        var manualWrapper = document.getElementById('inputManualWrapper');
+        var fasilitasWrapper = document.getElementById('inputFasilitasWrapper');
+        
+        var inputManual = document.getElementById('namaSubManual');
+        var selectFasilitas = document.getElementById('namaSubFasilitas');
+
+        if (namaKriteria === 'fasilitas') {
+            // Sembunyikan input teks manual, tampilkan dropdown fasilitas
+            manualWrapper.classList.add('d-none');
+            inputManual.removeAttribute('required');
+            inputManual.value = '';
+
+            fasilitasWrapper.classList.remove('d-none');
+            selectFasilitas.setAttribute('required', 'required');
+        } else {
+            // Tampilkan input teks manual, sembunyikan dropdown fasilitas
+            fasilitasWrapper.classList.add('d-none');
+            selectFasilitas.removeAttribute('required');
+            selectFasilitas.value = '';
+
+            manualWrapper.classList.remove('d-none');
+            inputManual.setAttribute('required', 'required');
+        }
+    });
+</script>
 @endsection

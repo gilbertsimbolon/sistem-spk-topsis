@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Topsis;
 
 use App\Http\Controllers\Controller;
 use App\Models\Criteria;
+use App\Models\Fasilitas;
 use App\Models\SubCriteria;
 use Illuminate\Http\Request;
 
@@ -18,8 +19,9 @@ class SubCriteriaController extends Controller
 
         // mengambil semua data criteria
         $criterias = Criteria::all();
+        $fasilitas = Fasilitas::all();
 
-        return view('admin.pages.topsis.data-sub-kriteria', compact('subCriterias', 'criterias'));
+        return view('admin.pages.topsis.data-sub-kriteria', compact('subCriterias', 'criterias', 'fasilitas'));
     }
 
     /**
@@ -35,17 +37,35 @@ class SubCriteriaController extends Controller
      */
     public function store(Request $request)
     {
+        // validasi
         $request->validate([
             'criteria_id' => 'required|exists:criterias,id',
-            'nama_sub_kriteria' => 'required|string|max:255',
-            'nilai' => 'required|numeric',
+            'nilai'       => 'required|numeric',
         ]);
 
-        // membuat Sub Criteria
+        // cek kriteria yang dipilih oleh admin
+        $kriteriaUtama = \App\Models\Criteria::find($request->criteria_id);
+
+        // logika penentuan nama kriteria
+        if (strtolower($kriteriaUtama->nama_kriteria) === 'fasilitas') {
+            // jika kriteria fasilitas
+            $request->validate([
+                'nama_sub_kriteria_fasilitas' => 'required|string|max:255',
+            ]);
+            $namaSubKriteria = $request->nama_sub_kriteria_fasilitas;
+        } else {
+            // jika kriteria selain fasilitas
+            $request->validate([
+                'nama_sub_kriteria_manual' => 'required|string|max:255',
+            ]);
+            $namaSubKriteria = $request->nama_sub_kriteria_manual;
+        }
+
+        // membuat sub criteria
         SubCriteria::create([
-            'criteria_id' => $request->criteria_id,
-            'nama_sub_kriteria' => $request->nama_sub_kriteria,
-            'nilai' => $request->nilai,
+            'criteria_id'       => $request->criteria_id,
+            'nama_sub_kriteria' => $namaSubKriteria, 
+            'nilai'             => $request->nilai,
         ]);
 
         return redirect()->back()->with('success', 'Sub kriteria berhasil ditambahkan.');

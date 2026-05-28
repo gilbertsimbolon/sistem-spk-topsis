@@ -31,7 +31,7 @@
                     <td>{{ $key + 1 }}</td>
                     <td><span class="fw-bold">{{ $k->nama_kost }}</span></td>
                     <td>
-                        @php $count = $k->penilaianAlternatifs->count(); @endphp
+                        @php $count = $k->penilaianAlternatif->count(); @endphp
                         @if($count >= $totalKriteria)
                             <span class="badge bg-success">Lengkap</span>
                         @else
@@ -64,13 +64,13 @@
                                                 
                                                 {{-- Cari nilai yang sudah tersimpan untuk kriteria ini di kost ini --}}
                                                 @php 
-                                                    $currentVal = $k->penilaianAlternatifs->where('criteria_id', $c->id)->first()?->nilai; 
+                                                    $currentVal = $k->penilaianAlternatif->where('criteria_id', $c->id)->first()?->nilai; 
                                                 @endphp
 
-                                                @if($c->subCriterias->count() > 0)
+                                                @if($c->subCriteria->count() > 0)
                                                     <select name="nilai[{{ $c->id }}]" class="form-select" required>
                                                         <option value="" disabled selected>-- Pilih --</option>
-                                                        @foreach($c->subCriterias as $sub)
+                                                        @foreach($c->subCriteria as $sub)
                                                             <option value="{{ $sub->nilai }}" {{ $currentVal == $sub->nilai ? 'selected' : '' }}>
                                                                 {{ $sub->nama_sub_kriteria }} ({{ $sub->nilai }})
                                                             </option>

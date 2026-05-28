@@ -11,6 +11,7 @@ class PenilaianAlternatif extends Model
 {
     use HasFactory;
 
+    protected $table = 'penilaian_alternatifs';
     protected $fillable = [
         'kost_id',
         'criteria_id',

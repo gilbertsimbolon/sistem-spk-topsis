@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ManajemenUser\UserController;
 use App\Http\Controllers\Admin\Topsis\CriteriaController;
 use App\Http\Controllers\Admin\Topsis\PenilaianAlternatifController;
 use App\Http\Controllers\Admin\Topsis\SubCriteriaController;
+use App\Http\Controllers\Admin\Topsis\TopsisController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\ComingSoonController;
@@ -40,7 +41,7 @@ Route::middleware('auth')->group(function () {
 
 // Hanya admin yang bisa akses.
 Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard', function() {
+    Route::get('/dashboard', function () {
         return view('admin.pages.dashboard');
     })->name('admin.dashboard.index');
 
@@ -74,7 +75,9 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Halaman Penilaian Alternatif
     Route::resource('/penilaian-alternatif', PenilaianAlternatifController::class);
+
+    // Halaman Perhitungan TOPSIS
+    Route::get('/perhitungan-topsis', [TopsisController::class, 'hitung'])->name('topsis.hitung');
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');
-

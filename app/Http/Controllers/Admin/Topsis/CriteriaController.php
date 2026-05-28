@@ -32,12 +32,18 @@ class CriteriaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kode_kriteria' => 'required|unique:criterias,kode_kriteria',
             'nama_kriteria' => 'required',
             'tipe' => 'required|in:benefit,cost',
-            'bobot' => 'required|numeric|min:0',
+            'bobot' => 'required|numeric|max:5',
         ]);
 
+        if($request->bobot > 5) {
+            return redirect()->back()->with('error', 'Bobot tidak boleh lebih dari 5.');
+        }
+
         Criteria::create([
+            'kode_kriteria' => $request->kode_kriteria,
             'nama_kriteria' => $request->nama_kriteria,
             'tipe' => $request->tipe,
             'bobot' => $request->bobot,
@@ -68,13 +74,15 @@ class CriteriaController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'kode_kriteria' => 'required|unique:criterias,kode_kriteria,' . $id,
             'nama_kriteria' => 'required',
             'tipe' => 'required|in:benefit,cost',
-            'bobot' => 'required|numeric|min:0',
+            'bobot' => 'required|numeric|max:5',
         ]);
 
         $criteria = Criteria::findOrFail($id);
         $criteria->update([
+            'kode_kriteria' => $request->kode_kriteria,
             'nama_kriteria' => $request->nama_kriteria,
             'tipe' => $request->tipe,
             'bobot' => $request->bobot,
