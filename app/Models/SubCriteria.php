@@ -12,7 +12,9 @@ class SubCriteria extends Model
 
     protected $fillable = [
         'criteria_id',
-        'nama_sub_kriteria',
+        'nilai_minimum',
+        'nilai_maksimum',
+        'keterangan',
         'nilai',
     ];
 

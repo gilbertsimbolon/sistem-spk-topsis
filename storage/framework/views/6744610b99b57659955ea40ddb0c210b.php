@@ -1,8 +1,8 @@
-@extends('admin.layouts.app')
 
-@section('title', 'Data Sub Kriteria | SIPKOS')
 
-@section('content')
+<?php $__env->startSection('title', 'Data Sub Kriteria | SIPKOS'); ?>
+
+<?php $__env->startSection('content'); ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
             <h5 class="mb-0 fw-bold text-dark">Data Sub Kriteria TOPSIS</h5>
@@ -12,30 +12,32 @@
         </div>
 
         <div class="card-body">
-            @if (session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Sukses!</strong> {{ session('success') }}
+                    <strong>Sukses!</strong> <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <ul class="nav nav-tabs mb-4" id="kriteriaTab" role="tablist">
-                @foreach ($criterias as $index => $c)
+                <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $index === 0 ? 'active fw-bold text-primary' : 'text-secondary' }}"
-                            id="tab-{{ $c->id }}" data-bs-toggle="tab" data-bs-target="#content-{{ $c->id }}"
-                            type="button" role="tab" aria-controls="content-{{ $c->id }}"
-                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
-                            {{ $c->nama_kriteria }}
+                        <button class="nav-link <?php echo e($index === 0 ? 'active fw-bold text-primary' : 'text-secondary'); ?>"
+                            id="tab-<?php echo e($c->id); ?>" data-bs-toggle="tab" data-bs-target="#content-<?php echo e($c->id); ?>"
+                            type="button" role="tab" aria-controls="content-<?php echo e($c->id); ?>"
+                            aria-selected="<?php echo e($index === 0 ? 'true' : 'false'); ?>">
+                            <?php echo e($c->nama_kriteria); ?>
+
                         </button>
                     </li>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
 
             <div class="tab-content" id="kriteriaTabContent">
-                @foreach ($criterias as $index => $c)
-                    <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="content-{{ $c->id }}"
-                        role="tabpanel" aria-labelledby="tab-{{ $c->id }}">
+                <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="tab-pane fade <?php echo e($index === 0 ? 'show active' : ''); ?>" id="content-<?php echo e($c->id); ?>"
+                        role="tabpanel" aria-labelledby="tab-<?php echo e($c->id); ?>">
 
                         <div class="table-responsive">
                             <table class="table table-striped align-middle border">
@@ -49,96 +51,97 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    <?php
                                         // Filter data sub kriteria yang hanya milik kriteria saat ini
                                         $filteredSubs = $subCriterias->where('criteria_id', $c->id);
                                         $no = 1;
-                                    @endphp
+                                    ?>
 
-                                    @if ($filteredSubs->isEmpty())
+                                    <?php if($filteredSubs->isEmpty()): ?>
                                         <tr>
                                             <td colspan="5" class="text-center text-muted py-4">Belum ada data sub
-                                                kriteria untuk kriteria {{ $c->nama_kriteria }}.</td>
+                                                kriteria untuk kriteria <?php echo e($c->nama_kriteria); ?>.</td>
                                         </tr>
-                                    @else
-                                        @foreach ($filteredSubs as $s)
+                                    <?php else: ?>
+                                        <?php $__currentLoopData = $filteredSubs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $s): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $no++ }}</td>
+                                                <td><?php echo e($no++); ?></td>
                                                 <td>
-                                                    @if ($s->nilai_minimum !== null || $s->nilai_maksimum !== null)
+                                                    <?php if($s->nilai_minimum !== null || $s->nilai_maksimum !== null): ?>
                                                         <span class="badge bg-light text-dark border">
-                                                            {{ number_format($s->nilai_minimum, 0, ',', '.') }} -
-                                                            {{ number_format($s->nilai_maksimum, 0, ',', '.') }}
+                                                            <?php echo e(number_format($s->nilai_minimum, 0, ',', '.')); ?> -
+                                                            <?php echo e(number_format($s->nilai_maksimum, 0, ',', '.')); ?>
+
                                                         </span>
-                                                    @else
+                                                    <?php else: ?>
                                                         <span class="text-muted">—</span>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </td>
-                                                <td><span class="fw-semibold">{{ $s->keterangan }}</span></td>
+                                                <td><span class="fw-semibold"><?php echo e($s->keterangan); ?></span></td>
                                                 <td><span
-                                                        class="badge bg-primary px-3 py-2 fs-6">{{ $s->nilai }}</span>
+                                                        class="badge bg-primary px-3 py-2 fs-6"><?php echo e($s->nilai); ?></span>
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-sm btn-warning text-white" data-bs-toggle="modal"
-                                                        data-bs-target="#editSubKriteriaModal{{ $s->id }}">Edit</button>
+                                                        data-bs-target="#editSubKriteriaModal<?php echo e($s->id); ?>">Edit</button>
 
-                                                    <form action="{{ route('sub-kriteria.destroy', $s->id) }}"
+                                                    <form action="<?php echo e(route('sub-kriteria.destroy', $s->id)); ?>"
                                                         method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
                                                         <button class="btn btn-sm btn-danger"
                                                             onclick="return confirm('Yakin ingin menghapus sub kriteria ini?')">Hapus</button>
                                                     </form>
                                                 </td>
                                             </tr>
 
-                                            <div class="modal fade" id="editSubKriteriaModal{{ $s->id }}"
+                                            <div class="modal fade" id="editSubKriteriaModal<?php echo e($s->id); ?>"
                                                 tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog">
-                                                    <form action="{{ route('sub-kriteria.update', $s->id) }}"
+                                                    <form action="<?php echo e(route('sub-kriteria.update', $s->id)); ?>"
                                                         method="POST">
-                                                        @csrf
-                                                        @method('PUT')
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('PUT'); ?>
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Edit Sub Kriteria:
-                                                                    {{ $c->nama_kriteria }}</h5>
+                                                                    <?php echo e($c->nama_kriteria); ?></h5>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <input type="hidden" name="criteria_id"
-                                                                    value="{{ $s->criteria_id }}">
+                                                                    value="<?php echo e($s->criteria_id); ?>">
 
-                                                                @if (strtolower(trim($c->nama_kriteria)) === 'harga' || strtolower(trim($c->nama_kriteria)) === 'jarak')
+                                                                <?php if(strtolower(trim($c->nama_kriteria)) === 'harga' || strtolower(trim($c->nama_kriteria)) === 'jarak'): ?>
                                                                     <div class="row mb-3">
                                                                         <div class="col-6">
                                                                             <label class="form-label">Nilai Minimum</label>
                                                                             <input type="number" name="nilai_minimum"
                                                                                 class="form-control"
-                                                                                value="{{ $s->nilai_minimum }}" required>
+                                                                                value="<?php echo e($s->nilai_minimum); ?>" required>
                                                                         </div>
                                                                         <div class="col-6">
                                                                             <label class="form-label">Nilai Maksimum</label>
                                                                             <input type="number" name="nilai_maksimum"
                                                                                 class="form-control"
-                                                                                value="{{ $s->nilai_maksimum }}" required>
+                                                                                value="<?php echo e($s->nilai_maksimum); ?>" required>
                                                                         </div>
                                                                     </div>
-                                                                @endif
+                                                                <?php endif; ?>
 
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Keterangan Sub
                                                                         Kriteria</label>
                                                                     <input type="text" name="keterangan"
-                                                                        class="form-control" value="{{ $s->keterangan }}"
+                                                                        class="form-control" value="<?php echo e($s->keterangan); ?>"
                                                                         required>
                                                                 </div>
 
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Nilai / Bobot Sub</label>
                                                                     <input type="number" name="nilai"
-                                                                        class="form-control" value="{{ $s->nilai }}"
+                                                                        class="form-control" value="<?php echo e($s->nilai); ?>"
                                                                         min="1" max="5" required>
                                                                 </div>
                                                             </div>
@@ -152,22 +155,22 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                        @endforeach
-                                    @endif
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
 
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="addSubKriteriaModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('sub-kriteria.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('sub-kriteria.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Tambah Sub Kriteria</h5>
@@ -178,11 +181,12 @@
                             <label class="form-label">Pilih Kriteria Utama</label>
                             <select name="criteria_id" id="selectKriteriaUtama" class="form-select" required>
                                 <option value="" disabled selected>-- Pilih Kriteria --</option>
-                                @foreach ($criterias as $c)
-                                    <option value="{{ $c->id }}"
-                                        data-nama="{{ strtolower(trim($c->nama_kriteria)) }}">{{ $c->nama_kriteria }}
+                                <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($c->id); ?>"
+                                        data-nama="<?php echo e(strtolower(trim($c->nama_kriteria))); ?>"><?php echo e($c->nama_kriteria); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
 
@@ -209,9 +213,9 @@
                             <label class="form-label">Pilih Item Fasilitas Master</label>
                             <select name="nama_sub_kriteria_fasilitas" id="namaSubFasilitas" class="form-select">
                                 <option value="" disabled selected>-- Pilih Fasilitas --</option>
-                                @foreach ($fasilitas as $f)
-                                    <option value="{{ $f->nama_fasilitas }}">{{ $f->nama_fasilitas }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $fasilitas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($f->nama_fasilitas); ?>"><?php echo e($f->nama_fasilitas); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                             <small class="text-muted d-block mt-1">💡 List ini diambil otomatis dari tabel master fasilitas
                                 kamu.</small>
@@ -307,4 +311,6 @@
             })
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laravel\spk-topsis\resources\views/admin/pages/topsis/data-sub-kriteria.blade.php ENDPATH**/ ?>
