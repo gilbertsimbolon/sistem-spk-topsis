@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ManajemenKost\KostController;
 use App\Http\Controllers\Admin\ManajemenUser\OwnerController;
 use App\Http\Controllers\Admin\ManajemenUser\UserController;
 use App\Http\Controllers\Admin\Topsis\CriteriaController;
+use App\Http\Controllers\Admin\Topsis\PenilaianAlternatifController;
 use App\Http\Controllers\Admin\Topsis\SubCriteriaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -70,6 +71,9 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Halaman Data Sub Kriteria
     Route::resource('/sub-kriteria', SubCriteriaController::class);
+
+    // Halaman Penilaian Alternatif
+    Route::resource('/penilaian-alternatif', PenilaianAlternatifController::class);
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');

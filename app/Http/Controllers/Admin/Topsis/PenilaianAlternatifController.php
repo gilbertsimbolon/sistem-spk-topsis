@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin\Topsis;
 
 use App\Http\Controllers\Controller;
+use App\Models\Criteria;
+use App\Models\Kost;
+use App\Models\PenilaianAlternatif;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenilaianAlternatifController extends Controller
 {
@@ -12,7 +16,18 @@ class PenilaianAlternatifController extends Controller
      */
     public function index()
     {
-        //
+        // ambil kost dengan relasi ke penilaian alternatif
+        $kosts = Kost::with('penilaianAlternatifs')->get();
+        
+        // ambil kriteria 
+        $criterias = Criteria::whereNotIn(DB::raw('LOWER(nama_kriteria)'), ['harga', 'fasilitas'])
+                             ->with('subCriteria')
+                             ->get();
+        
+        // 3. Total kriteria yang harus dinilai manual (untuk indikator badge lengkap/tidak)
+        $totalKriteria = $criterias->count();
+
+        return view('admin.pages.topsis.penilaian-alternatif', compact('kosts', 'criterias', 'totalKriteria'));
     }
 
     /**
@@ -28,7 +43,27 @@ class PenilaianAlternatifController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kost_id' => 'required|exists:kosts,id',
+            'nilai' => 'required|array',
+        ]);
+
+        foreach ($request->nilai as $criteriaId => $nilaiAngka) {
+            // Jika nilai tidak diisi, abaikan atau beri 0
+            if ($nilaiAngka === null) continue;
+
+            PenilaianAlternatif::updateOrCreate(
+                [
+                    'kost_id' => $request->kost_id,
+                    'criteria_id' => $criteriaId
+                ],
+                [
+                    'nilai' => $nilaiAngka
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Penilaian berhasil disimpan!');
     }
 
     /**

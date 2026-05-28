@@ -69,19 +69,19 @@
                 <li class="menu-item">
                     <a href="{{ route('data-kriteria.index') }}"
                         class="menu-link">
-                        <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
+                        <div class="text-truncate">Data Kriteria</div>
                     </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('sub-kriteria.index') }}"
                         class="menu-link">
-                        <div class="text-truncate" data-i18n="Pricing">Sub Kriteria</div>
+                        <div class="text-truncate">Sub Kriteria</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/payment-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Payment">Sub Kriteria</div>
+                    <a href="{{ route('penilaian-alternatif.index') }}"
+                        class="menu-link">
+                        <div class="text-truncate">Penilaian Alternatif</div>
                     </a>
                 </li>
                 <li class="menu-item">
