@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\ManajemenKost\JenisKostController;
 use App\Http\Controllers\Admin\ManajemenKost\KostController;
 use App\Http\Controllers\Admin\ManajemenUser\OwnerController;
 use App\Http\Controllers\Admin\ManajemenUser\UserController;
+use App\Http\Controllers\Admin\Topsis\CriteriaController;
+use App\Http\Controllers\Admin\Topsis\SubCriteriaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\ComingSoonController;
@@ -62,6 +64,12 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Halaman Owner 
     Route::resource('/owner', OwnerController::class);
+
+    // Halaman Data Kriteria
+    Route::resource('/data-kriteria', CriteriaController::class);
+
+    // Halaman Data Sub Kriteria
+    Route::resource('/sub-kriteria', SubCriteriaController::class);
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');

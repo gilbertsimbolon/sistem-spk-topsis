@@ -67,15 +67,15 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/landing-page.html"
-                        class="menu-link" target="_blank">
+                    <a href="{{ route('data-kriteria.index') }}"
+                        class="menu-link">
                         <div class="text-truncate" data-i18n="Landing">Data Kriteria</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/html/front-pages/pricing-page.html"
-                        class="menu-link" target="_blank">
-                        <div class="text-truncate" data-i18n="Pricing">Bobot Kriteria</div>
+                    <a href="{{ route('sub-kriteria.index') }}"
+                        class="menu-link">
+                        <div class="text-truncate" data-i18n="Pricing">Sub Kriteria</div>
                     </a>
                 </li>
                 <li class="menu-item">
