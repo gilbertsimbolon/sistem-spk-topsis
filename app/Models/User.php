@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Fasilitas;
 use App\Models\Kost;
+use App\Models\PenilaianAlternatif;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -35,5 +37,17 @@ class User extends Authenticatable
     public function kost()
     {
         return $this->hasMany(Kost::class, 'owner_id');
+    }
+
+    // relasi ke penilaian alternatif
+    public function penilaianAlternatif()
+    {
+        return $this->hasMany(PenilaianAlternatif::class);
+    }
+
+    // relasi ke fasilitas
+    public function fasilitas()
+    {
+        return $this->belongsToMany(Fasilitas::class, 'kost_fasilitas');
     }
 }
