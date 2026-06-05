@@ -179,58 +179,64 @@
 
     <!-- Section Kost -->
     <section id="kost" class="min-vh-100 d-flex align-items-center mt-5">
-
         <div class="container">
 
-            <!-- Header -->
-            <div class="row align-items-center mb-5">
-
-                <!-- Teks kiri -->
-                <div class="col-md-8">
-                    <h3>Rekomendasi Kost di</h3>
-                    <p>Rekomendasi kost terbaik berdasarkan perhitungan sistem TOPSIS</p>
+            <div class="row align-items-center mb-4">
+                <div class="col-md-12">
+                    <h3 class="fw-bold">Daftar Kost</h3>
+                    <p class="text-muted">Silahkan login atau klik pada kost yang ingin Anda lihat, untuk menampilkan
+                        detail kost.</p>
                 </div>
-
-                <!-- Tombol kanan -->
-                <div class="col-md-4 d-none d-md-flex justify-content-end gap-3">
-                    <div class="swiper-button-prev position-static mt-0 text-dark"
-                        style="--swiper-navigation-size: 35px"></div>
-                    <div class="swiper-button-next position-static mt-0 text-dark"
-                        style="--swiper-navigation-size: 35px"></div>
-                </div>
-
             </div>
 
-            <!-- Swiper -->
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <!-- Card -->
-                        <div class="swiper-slide">
-                            <a class="card border-0 shadow-sm flex-fill text-decoration-none text-dark" href="<?php echo e(route('login')); ?>">
-                                <div class="position-relative">
-                                    <img src="<?php echo e($kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span
-                                        class="badge bg-success position-absolute top-0 start-0 m-2"><?php echo e($kos->jenis->nama_jenis ?? 'Tidak Ada Jenis'); ?></span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1"><?php echo e($kos->nama_kost); ?></h6>
-                                    <small
-                                        class="text-muted d-block mb-2"><?php echo e($kos->daerah->name ?? 'Tidak Ada Daerah'); ?></small>
-                                    <p class="text-muted small text-truncate">
+            <div class="row g-4" id="kost-container">
+                <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 kost-item d-none">
+                        <a class="card border-0 shadow-sm h-100 text-decoration-none text-dark card-hover"
+                            href="<?php echo e(route('login')); ?>">
+                            <div class="position-relative">
+                                <img src="<?php echo e($kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg')); ?>"
+                                    class="card-img-top kost-img" style="height: 200px; object-fit: cover;"
+                                    alt="kost">
+                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                    <?php echo e($kos->jenis->jenis_kost ?? 'Tidak Ada Jenis'); ?>
+
+                                </span>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-truncate-2"><?php echo e($kos->nama_kost); ?></h6>
+                                    <small class="text-muted d-block mb-2">
+                                        <i
+                                            class="bi bi-geo-alt-fill me-1"></i><?php echo e($kos->daerah->name ?? 'Tidak Ada Daerah'); ?>
+
+                                    </small>
+                                    <p class="text-muted small text-truncate mb-3">
                                         <?php echo e($kos->fasilitas->isEmpty() ? 'Tidak Ada Fasilitas' : $kos->fasilitas->implode('keterangan', ', ')); ?>
 
                                     </p>
-                                    <h6 class="text-primary fw-bold"><?php echo e($kos->harga); ?></h6>
                                 </div>
-                            </a>
-                        </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </div>
+                                <h6 class="text-primary fw-bold mb-0">Rp
+                                    <?php echo e(number_format($kos->harga, 0, ',', '.')); ?><span
+                                        class="text-muted small fw-normal">/bulan</span></h6>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-        </div>
+            <?php if($kosts->count() > 4): ?>
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <button type="button" id="btn-load-more"
+                            class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+                            Tampilkan Lebih Banyak <i class="bi bi-chevron-down ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
 
+        </div>
     </section>
 
     <!-- Section FAQ -->
@@ -248,46 +254,191 @@
                 <div class="col-md-8 col-lg-6">
 
                     <div class="accordion" id="accordionExample">
+                        <!-- Pertanyaan 1 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Bagaimana cara menggunakan aplikasi ini?
+                                    Bagaimana cara mencari kost yang sesuai dengan kebutuhan saya?
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show"
                                 aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <strong>Sabar</strong>
+                                    <strong>Anda dapat langsung melihat daftar kost yang tersedia di halaman utama.
+                                        Gunakan fitur pencarian atau filter berdasarkan daerah, jenis kost
+                                        (Putra/Putri/Campuran), dan fasilitas yang Anda inginkan untuk mempersempit
+                                        hasil pencarian.</strong>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Pertanyaan 2 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Kapan aplikasi ini selesai?
+                                    Apa arti dari label "Putra", "Putri", dan "Campuran" pada kartu kost?
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <strong>Sabar</strong>
+                                    <strong>"Putra" berarti kost yang hanya untuk laki-laki, "Putri" berarti kost yang
+                                        hanya untuk perempuan, dan "Campuran" berarti kost yang bisa digunakan oleh
+                                        keduanya.</strong>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Pertanyaan 3 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseThree" aria-expanded="false"
                                     aria-controls="collapseThree">
-                                    Kok sabar terus?
+                                    Apakah harga yang tertera di website sudah termasuk biaya listrik dan air?
                                 </button>
                             </h2>
                             <div id="collapseThree" class="accordion-collapse collapse"
                                 aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <strong>Karena sabar adalah sebagian dari iman.</strong>
+                                    <strong>Kebijakan ini berbeda-beda untuk setiap kost. Beberapa kost sudah menyatukan
+                                        biaya listrik/air ke dalam harga sewa bulanan, dan beberapa lainnya menerapkan
+                                        sistem token listrik mandiri. Anda bisa membaca informasi detail ini pada
+                                        deskripsi lengkap masing-masing kost.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFour" aria-expanded="false"
+                                    aria-controls="collapseFour">
+                                    Bagaimana cara saya melihat foto-foto kondisi kamar kost?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Cukup klik pada kartu kost yang Anda minati. Anda akan diarahkan ke halaman
+                                        detail kost yang menyediakan galeri foto lengkap, mulai dari foto kamar tidur,
+                                        kamar mandi, hingga fasilitas bersama.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 5 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseFive" aria-expanded="false"
+                                    aria-controls="collapseFive">
+                                    Apakah fasilitas yang tertulis di website dijamin tersedia di lokasi?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Ya, semua fasilitas yang tertera (seperti Wi-Fi, AC, Kasur, Lemari, atau
+                                        Kamar Mandi Dalam) telah diverifikasi dan di-update secara berkala oleh pemilik
+                                        kost.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 6 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                    Saya tertarik dengan salah satu kost, bagaimana cara memesan atau menghubungi
+                                    pemiliknya?
+                                </button>
+                            </h2>
+                            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Silakan klik tombol "Login" atau "Daftar" terlebih dahulu untuk membuat
+                                        akun. Setelah masuk ke sistem, Anda akan mendapatkan akses penuh untuk melihat
+                                        kontak pemilik kost atau melakukan pengajuan sewa langsung.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 7 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseSeven" aria-expanded="false"
+                                    aria-controls="collapseSeven">
+                                    Apakah sistem keamanan di kost-kost yang terdaftar dijamin aman?
+                                </button>
+                            </h2>
+                            <div id="collapseSeven" class="accordion-collapse collapse"
+                                aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Setiap kost memiliki informasi indikator keamanan masing-masing di halaman
+                                        detailnya, seperti ketersediaan CCTV 24 jam, penjagaan satpam, atau sistem
+                                        gerbang satu pintu (one-gate system).</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 8 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseEight" aria-expanded="false"
+                                    aria-controls="collapseEight">
+                                    Bisakah saya melakukan survei lokasi langsung sebelum membayar?
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse"
+                                aria-labelledby="headingEight" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Sangat disarankan! Anda bisa menghubungi nomor pengelola/pemilik kost yang
+                                        tertera setelah Anda login untuk membuat janji temu dan melakukan survei
+                                        langsung ke lokasi.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 9 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingNine">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseNine" aria-expanded="false"
+                                    aria-controls="collapseNine">
+                                    Bagaimana sistem pembayaran sewa kost di SIPKOST?
+                                </button>
+                            </h2>
+                            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Sistem pembayaran dapat disepakati langsung dengan pemilik kost setelah Anda
+                                        melakukan pengajuan, baik melalui transfer bank maupun pembayaran tunai sesuai
+                                        dengan kesepakatan kontrak.</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pertanyaan 10 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTen">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                    Apakah ada biaya tambahan saat menggunakan website SIPKOST untuk mencari kost?
+                                </button>
+                            </h2>
+                            <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <strong>Tidak ada. Layanan pencarian, melihat detail fasilitas, dan melihat
+                                        informasi kost di website SIPKOST 100% gratis untuk seluruh calon penghuni
+                                        kost.</strong>
                                 </div>
                             </div>
                         </div>
@@ -310,30 +461,38 @@
     <!-- JavaScript Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     <script>
-        var swiper = new Swiper(".mySwiper", {
-            spaceBetween: 20,
+        document.addEventListener("DOMContentLoaded", function() {
+            const itemsPerLoad = 4; // Jumlah item yang ditampilkan setiap klik
+            const items = document.querySelectorAll('.kost-item');
+            const btnLoadMore = document.getElementById('btn-load-more');
+            let currentDisplayed = 0;
 
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
+            // Fungsi untuk menampilkan item
+            function showNextItems() {
+                let nextLimit = currentDisplayed + itemsPerLoad;
 
-            breakpoints: {
-                0: {
-                    slidesPerView: 1,
-                },
-
-                768: {
-                    slidesPerView: 2,
-                },
-
-                992: {
-                    slidesPerView: 4,
+                for (let i = currentDisplayed; i < nextLimit && i < items.length; i++) {
+                    items[i].classList.remove('d-none');
+                    currentDisplayed++;
                 }
+
+                // Jika semua item sudah tampil, sembunyikan tombol
+                if (currentDisplayed >= items.length && btnLoadMore) {
+                    btnLoadMore.remove();
+                }
+            }
+
+            // Jalankan pertama kali saat halaman dimuat
+            if (items.length > 0) {
+                showNextItems();
+            }
+
+            // Event saat tombol klik
+            if (btnLoadMore) {
+                btnLoadMore.addEventListener('click', function() {
+                    showNextItems();
+                });
             }
         });
     </script>
