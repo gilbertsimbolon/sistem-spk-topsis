@@ -6,6 +6,10 @@ use App\Models\DaerahKost;
 use App\Models\Fasilitas;
 use App\Models\FotoKost;
 use App\Models\JenisKost;
+use App\Models\Keamanan;
+use App\Models\Kebersihan;
+use App\Models\PenilaianAlternatif;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +43,18 @@ class Kost extends Model
     public function fasilitas()
     {
         return $this->belongsToMany(Fasilitas::class, 'kost_fasilitas');
+    }
+
+    // relasi untuk mengambil keamanan kost
+    public function keamanan()
+    {
+        return $this->belongsToMany(Keamanan::class, 'kost_keamanan');
+    }
+
+    // relasi untuk mengambil kebersihan kost
+    public function kebersihan()
+    {
+        return $this->belongsToMany(Kebersihan::class, 'kost_kebersihan');
     }
 
     // Relasi untuk mengambil foto kost

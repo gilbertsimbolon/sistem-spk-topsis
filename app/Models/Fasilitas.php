@@ -10,7 +10,8 @@ class Fasilitas extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_fasilitas',
+        'keterangan',
+        'bobot',
     ];
 
     // relasi ke kost

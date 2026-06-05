@@ -4,98 +4,61 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="card">
-    <div class="card-header">
-        <h5>Penilaian Alternatif (Data Kost)</h5>
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-dark">Matriks Keputusan (Otomatis)</h5>
+        <span class="badge bg-success px-3 py-2">✨ Terisi Otomatis dari Data Kos</span>
     </div>
 
     <div class="card-body">
-        <?php if(session('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo e(session('success')); ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 5%" rowspan="2" class="align-middle">#</th>
+                        <th rowspan="2" class="align-middle text-start">Nama Kost</th>
+                        <th colspan="<?php echo e($totalKriteria); ?>" class="text-center">Kriteria (Nilai Bobot TOPSIS 1-5)</th>
+                    </tr>
+                    <tr>
+                        <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <th><?php echo e($c->nama_kriteria); ?></th>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr>
+                        <td><?php echo e($key + 1); ?></td>
+                        <td class="text-start"><span class="fw-bold text-dark"><?php echo e($k->nama_kost); ?></span></td>
+                        
+                        <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $dataMatriks = $k->matriks[$c->id] ?? ['bobot' => 1, 'riil' => 0];
+                            ?>
+                            <td>
+                                <span class="badge bg-primary px-3 py-2 fs-6" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      title="Nilai Riil: <?php echo e($dataMatriks['riil']); ?>">
+                                    <?php echo e($dataMatriks['bobot']); ?>
 
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nama Kost</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <tr>
-                    <td><?php echo e($key + 1); ?></td>
-                    <td><span class="fw-bold"><?php echo e($k->nama_kost); ?></span></td>
-                    <td>
-                        <?php $count = $k->penilaianAlternatif->count(); ?>
-                        <?php if($count >= $totalKriteria): ?>
-                            <span class="badge bg-success">Lengkap</span>
-                        <?php else: ?>
-                            <span class="badge bg-warning">Belum Lengkap (<?php echo e($count); ?>/<?php echo e($totalKriteria); ?>)</span>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#penilaianModal<?php echo e($k->id); ?>">
-                            Input Nilai
-                        </button>
-                    </td>
-                </tr>
-
-                <div class="modal fade" id="penilaianModal<?php echo e($k->id); ?>" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <form action="<?php echo e(route('penilaian-alternatif.store')); ?>" method="POST">
-                            <?php echo csrf_field(); ?>
-                            <input type="hidden" name="kost_id" value="<?php echo e($k->id); ?>">
-                            
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Penilaian: <?php echo e($k->nama_kost); ?></h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <?php $__currentLoopData = $criterias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold"><?php echo e($c->nama_kriteria); ?></label>
-                                                
-                                                
-                                                <?php 
-                                                    $currentVal = $k->penilaianAlternatif->where('criteria_id', $c->id)->first()?->nilai; 
-                                                ?>
-
-                                                <?php if($c->subCriteria->count() > 0): ?>
-                                                    <select name="nilai[<?php echo e($c->id); ?>]" class="form-select" required>
-                                                        <option value="" disabled selected>-- Pilih --</option>
-                                                        <?php $__currentLoopData = $c->subCriteria; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <option value="<?php echo e($sub->nilai); ?>" <?php echo e($currentVal == $sub->nilai ? 'selected' : ''); ?>>
-                                                                <?php echo e($sub->nama_sub_kriteria); ?> (<?php echo e($sub->nilai); ?>)
-                                                            </option>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    </select>
-                                                <?php else: ?>
-                                                    <input type="number" step="any" name="nilai[<?php echo e($c->id); ?>]" class="form-control" value="<?php echo e($currentVal); ?>" required>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Simpan Penilaian</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </tbody>
-        </table>
+                                </span>
+                            </td>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laravel\spk-topsis\resources\views/admin/pages/topsis/penilaian-alternatif.blade.php ENDPATH**/ ?>

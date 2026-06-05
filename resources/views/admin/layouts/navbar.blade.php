@@ -9,29 +9,24 @@
     </div>
 
     {{-- RIGHT NAVBAR --}}
-    <div class="navbar-nav-right d-flex align-items-center justify-content-end flex-grow-1"
-        id="navbar-collapse">
+    <div class="navbar-nav-right d-flex align-items-center justify-content-end flex-grow-1" id="navbar-collapse">
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
 
             {{-- USER DROPDOWN --}}
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
 
-                <a class="nav-link dropdown-toggle hide-arrow d-flex align-items-center"
-                    href="javascript:void(0);"
+                <a class="nav-link dropdown-toggle hide-arrow d-flex align-items-center" href="javascript:void(0);"
                     data-bs-toggle="dropdown">
 
                     {{-- USER INFO --}}
                     <div class="text-end">
-
                         <h6 class="mb-0 fw-semibold">
                             {{ Auth::user()->name }}
                         </h6>
-
                         <small class="text-muted text-capitalize">
                             {{ Auth::user()->role }}
                         </small>
-
                     </div>
 
                 </a>
@@ -42,19 +37,14 @@
                     {{-- USER INFO --}}
                     <li>
                         <div class="dropdown-item">
-
                             <div>
-
                                 <h6 class="mb-0">
                                     {{ Auth::user()->name }}
                                 </h6>
-
                                 <small class="text-muted text-capitalize">
                                     {{ Auth::user()->role }}
                                 </small>
-
                             </div>
-
                         </div>
                     </li>
 
@@ -64,23 +54,10 @@
 
                     {{-- PROFILE --}}
                     <li>
-                        <a class="dropdown-item" href="#">
-
+                        {{-- Arahkan href ke route profil yang akan kamu buat --}}
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
                             <i class="bx bx-user me-2"></i>
-
                             <span>My Profile</span>
-
-                        </a>
-                    </li>
-
-                    {{-- SETTINGS --}}
-                    <li>
-                        <a class="dropdown-item" href="#">
-
-                            <i class="bx bx-cog me-2"></i>
-
-                            <span>Settings</span>
-
                         </a>
                     </li>
 
@@ -90,21 +67,13 @@
 
                     {{-- LOGOUT --}}
                     <li>
-
                         <form action="{{ route('logout') }}" method="POST">
-
                             @csrf
-
                             <button type="submit" class="dropdown-item">
-
-                                <i class="bx bx-power-off me-2"></i>
-
-                                <span>Log Out</span>
-
+                                <i class="bx bx-power-off me-2 text-danger"></i>
+                                <span class="text-danger fw-semibold">Log Out</span>
                             </button>
-
                         </form>
-
                     </li>
 
                 </ul>

@@ -32,14 +32,16 @@ class FasilitasKostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_fasilitas' => 'required|string:max:255',
+            'keterangan' => 'required|string:max:255',
+            'bobot' => 'required|integer|between:1,5',
         ]);
 
         Fasilitas::create([
-            'nama_fasilitas' => $request->nama_fasilitas
+            'keterangan' => $request->keterangan,
+            'bobot' => $request->bobot,
         ]);
 
-        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas erhasil ditamahkan');
+        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas berhasil ditambahkan');
     }
 
     /**
@@ -64,16 +66,18 @@ class FasilitasKostController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nama_fasilitas' => 'required|string|max:255',
+            'keterangan' => 'required|string|max:255',
+            'bobot' => 'required|integer|between:1,5',
         ]);
 
         $fasilitas = Fasilitas::findOrFail($id);
 
         $fasilitas->update([
-            'nama_fasilitas' => $request->nama_fasilitas
+            'keterangan' => $request->keterangan,
+            'bobot' => $request->bobot,
         ]);
 
-        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas erhasil diperarui');
+        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas berhasil diperbarui');
     }
 
     /**
@@ -85,6 +89,6 @@ class FasilitasKostController extends Controller
 
         $fasilitas->delete();
 
-        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas erhasil dihapus.');
+        return redirect()->route('fasilitas.index')->with('success', 'Fasilitas berhasil dihapus.');
     }
 }

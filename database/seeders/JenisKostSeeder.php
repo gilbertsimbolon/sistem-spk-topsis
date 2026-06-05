@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\JenisKost;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class JenisKostSeeder extends Seeder
 {
@@ -13,12 +12,16 @@ class JenisKostSeeder extends Seeder
      */
     public function run(): void
     {
-        $jenis = [
-            ['name' => 'Putra'],
-            ['name' => 'Putri'],
-            ['name' => 'Campur'],
-        ];
+        JenisKost::create([
+            'jenis_kost' => 'Putra',
+        ]);
 
-        DB::insert('jenis_kosts', $jenis);
+        JenisKost::create([
+            'jenis_kost' => 'Putri',
+        ]);
+
+        JenisKost::create([
+            'jenis_kost' => 'Campur',
+        ]);
     }
 }

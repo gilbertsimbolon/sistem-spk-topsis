@@ -206,144 +206,27 @@
             <!-- Swiper -->
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <!-- Card 1 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam dan segala macamm</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
+                    @foreach ($kosts as $kos)
+                        <!-- Card -->
+                        <div class="swiper-slide">
+                            <a class="card border-0 shadow-sm flex-fill text-decoration-none text-dark" href="{{ route('login') }}">
+                                <div class="position-relative">
+                                    <img src="{{ $kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg') }}" class="card-img-top kost-img" alt="kost">
+                                    <span
+                                        class="badge bg-success position-absolute top-0 start-0 m-2">{{ $kos->jenis->nama_jenis ?? 'Tidak Ada Jenis' }}</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-1">{{ $kos->nama_kost }}</h6>
+                                    <small
+                                        class="text-muted d-block mb-2">{{ $kos->daerah->name ?? 'Tidak Ada Daerah' }}</small>
+                                    <p class="text-muted small text-truncate">
+                                        {{ $kos->fasilitas->isEmpty() ? 'Tidak Ada Fasilitas' : $kos->fasilitas->implode('keterangan', ', ') }}
+                                    </p>
+                                    <h6 class="text-primary fw-bold">{{ $kos->harga }}</h6>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam
-                                    asdasdasdsadas</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 5 -->
-                    <div class="swiper-slide">
-                        <!-- Card 1 -->
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 6 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 7 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 8 -->
-                    <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm flex-fill">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/kost1.jpg') }}" class="card-img-top kost-img"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                <small class="text-muted d-block mb-2">Tataaran Patar</small>
-                                <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam
-                                    asdasdasdsadas</p>
-                                <h6 class="text-primary fw-bold">Rp2.500.000/bulan</h6>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 

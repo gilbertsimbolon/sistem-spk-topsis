@@ -1,11 +1,9 @@
-
-
 <?php $__env->startSection('title', 'Hasil Rekomendasi TOPSIS | SIPKOS'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Hasil Perangkingan Rekomendasi Kost (TOPSIS)</h5>
+            <h5 class="mb-0">10 Kost Terbaik Berdasarkan Perhitungan TOPSIS</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">

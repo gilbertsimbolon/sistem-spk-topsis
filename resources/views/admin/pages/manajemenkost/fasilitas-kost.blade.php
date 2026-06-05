@@ -17,6 +17,7 @@
                 <tr>
                     <th>#</th>
                     <th>Nama Fasilitas</th>
+                    <th>Bobot</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -24,7 +25,8 @@
                 @foreach($fasilitas as $key => $f)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $f->nama_fasilitas }}</td>
+                    <td>{{ $f->keterangan }}</td>
+                    <td>{{ $f->bobot }}</td>
                     <td>
                         <!-- Button Edit -->
                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
@@ -52,7 +54,10 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <input type="text" name="nama_fasilitas" class="form-control" value="{{ $f->nama_fasilitas }}" required>
+                                    <input type="text" name="keterangan" class="form-control" value="{{ $f->keterangan }}" required>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="integer" name="bobot" class="form-control" value="{{ $f->bobot }}" required>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -79,7 +84,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="nama_fasilitas" class="form-control" placeholder="Nama Fasilitas" required>
+                    <input type="text" name="keterangan" class="form-control" placeholder="Nama Fasilitas" required>
+                </div>
+                <div class="modal-body">
+                    <input type="integer" name="bobot" class="form-control" placeholder="Nilai Bobot (1-5)" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

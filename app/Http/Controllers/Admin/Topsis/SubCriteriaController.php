@@ -37,39 +37,35 @@ class SubCriteriaController extends Controller
      */
     public function store(Request $request)
     {
-        // validasi
-        $request->validate([
-            'criteria_id' => 'required|exists:criterias,id',
-            'nilai_minimum' => 'nullable|integer|min:0',
-            'nilai_maksimum' => 'nullable|integer|gte:nilai_minimum',
-            'nilai'       => 'required|numeric|between:1,5',
-        ]);
-
-        // cek kriteria yang dipilih oleh admin
+        // cek kriteria utama
         $kriteriaUtama = Criteria::findOrFail($request->criteria_id);
-        $namaKriteriaIdn = strToLower($kriteriaUtama->nama_kriteria);
-        $keteranganSub = '';
+        $namaKriteriaIdn = strtolower(trim($kriteriaUtama->nama_kriteria));
 
-        // penentuan teks keterangan berdasarkan jenis kriteria
-        if ($namaKriteriaIdn === 'fasilitas') {
-            $request->validate([
-                'nama_sub_kriteria_fasilitas' => 'required|string|max:255',
-            ]);
-            $keteranganSub = $request->nama_sub_kriteria_fasilitas;
-        } else {
-            $request->validate([
-                'nama_sub_kriteria_manual' => 'required|string|max:255',
-            ]);
-            $keteranganSub = $request->nama_sub_kriteria_manual;
+        $ruleMinimum = 'required|integer|min:0';
+        $ruleMaksimum = 'required|integer|gte:nilai_minimum';
+
+        // jika kriteria berbasis persen
+        if (in_array($namaKriteriaIdn, ['fasilitas', 'keamanan', 'kebersihan'])) {
+            $ruleMinimum = 'required|integer|between:0,100';
+            $ruleMaksimum = 'required|integer|between:0,100|gte:nilai_minimum';
         }
 
-        // membuat sub criteria setelah berhasil melakukan validasi
+        // validasi
+        $request->validate([
+            'criteria_id'   => 'required|exists:criterias,id',
+            'nilai_minimum' => $ruleMinimum,
+            'nilai_maksimum' => $ruleMaksimum,
+            'keterangan'    => 'required|string|max:255',
+            'nilai'         => 'required|numeric|between:1,5',
+        ]);
+
+        // simpan data
         SubCriteria::create([
-            'criteria_id' => $request->criteria_id,
+            'criteria_id'   => $request->criteria_id,
             'nilai_minimum' => $request->nilai_minimum,
             'nilai_maksimum' => $request->nilai_maksimum,
-            'keterangan' => $keteranganSub,
-            'nilai' => $request->nilai,
+            'keterangan'    => $request->keterangan,
+            'nilai'         => $request->nilai,
         ]);
 
         return redirect()->back()->with('success', 'Sub kriteria berhasil ditambahkan.');
@@ -96,28 +92,38 @@ class SubCriteriaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // validasi awal
+        // cek kriteria untuk validasi edit
+        $kriteriaUtama = Criteria::findOrFail($request->criteria_id);
+        $namaKriteriaIdn = strtolower(trim($kriteriaUtama->nama_kriteria));
+
+        $ruleMinimum = 'required|integer|min:0';
+        $ruleMaksimum = 'required|integer|gte:nilai_minimum';
+
+        if (in_array($namaKriteriaIdn, ['fasilitas', 'keamanan', 'kebersihan'])) {
+            $ruleMinimum = 'required|integer|between:0,100';
+            $ruleMaksimum = 'required|integer|between:0,100|gte:nilai_minimum';
+        }
+
+        // validasi update
         $request->validate([
-            'criteria_id' => 'required|exists:criterias,id',
-            'nilai_minimum' => 'nullable|integer|min:0',
-            'nilai_maksimum' => 'nullable|integer|gte:nilai_minimum',
-            'keterangan' => 'required|string|max:255',
-            'nilai' => 'required|numeric|between:1,5',
+            'criteria_id'   => 'required|exists:criterias,id',
+            'nilai_minimum' => $ruleMinimum,
+            'nilai_maksimum' => $ruleMaksimum,
+            'keterangan'    => 'required|string|max:255',
+            'nilai'         => 'required|numeric|between:1,5',
         ]);
 
-        // cari sub kriteria yang indin diedit berdasarkan id
+        // cari dan update data
         $subCriteria = SubCriteria::findOrFail($id);
-
-        // update data
         $subCriteria->update([
-            'criteria_id' => $request->criteria_id,
+            'criteria_id'   => $request->criteria_id,
             'nilai_minimum' => $request->nilai_minimum,
             'nilai_maksimum' => $request->nilai_maksimum,
-            'keterangan' => $request->keterangan,
-            'nilai' => $request->nilai,
+            'keterangan'    => $request->keterangan,
+            'nilai'         => $request->nilai,
         ]);
 
-        return redirect()->back()->with('success', 'Sub kriteria berhasil diperbarui.');
+        return redirect()->back()->with('with', 'Sub kriteria berhasil diperbarui.');
     }
 
     /**

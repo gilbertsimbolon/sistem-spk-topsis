@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Fasilitas;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class FasilitasSeeder extends Seeder
 {
@@ -13,22 +12,29 @@ class FasilitasSeeder extends Seeder
      */
     public function run(): void
     {
-        $fasilitas = [
-            ['name' => 'AC'],
-            ['name'=> 'CCTV'],
-            ['name' => 'TV'],
-            ['name' => 'Kamar Mandi Dalam'],
-            ['name' => 'Kamar Mandi Luar'],
-            ['name' => 'Kasur'],
-            ['name' => 'KOI'],
-            ['name' => 'Wi-Fi'],
-            ['name' => 'Kulkas'],
-            ['name' => 'Meja'],
-            ['name' => 'Kursi'],
-            ['name' => 'Air'],
-            ['name' => 'Listrik'],
-        ];
+        Fasilitas::create([
+            'keterangan' => 'AC',
+            'bobot' => 3,
+        ]);
 
-        DB::insert('fasilitas', $fasilitas);
+        Fasilitas::create([
+            'keterangan' => 'WiFI',
+            'bobot' => 4,
+        ]);
+
+        Fasilitas::create([
+            'keterangan' => 'Kamar Mandi Dalam',
+            'bobot' => 5,
+        ]);
+
+        Fasilitas::create([
+            'keterangan' => 'Meja',
+            'bobot' => 4,
+        ]);
+
+        Fasilitas::create([
+            'keterangan' => 'Lemari',
+            'bobot' => 3,
+        ]);
     }
 }

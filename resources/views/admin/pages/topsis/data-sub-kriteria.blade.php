@@ -34,6 +34,9 @@
 
             <div class="tab-content" id="kriteriaTabContent">
                 @foreach ($criterias as $index => $c)
+                    @php
+                        $namaKriteriaClean = strtolower(trim($c->nama_kriteria));
+                    @endphp
                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="content-{{ $c->id }}"
                         role="tabpanel" aria-labelledby="tab-{{ $c->id }}">
 
@@ -42,7 +45,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 5%">#</th>
-                                        <th style="width: 25%">Rentang Nilai Riil</th>
+                                        <th style="width: 30%">Rentang Nilai Riil</th>
                                         <th>Keterangan Sub Kriteria</th>
                                         <th style="width: 15%">Nilai (Skala)</th>
                                         <th style="width: 15%">Aksi</th>
@@ -50,7 +53,6 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        // Filter data sub kriteria yang hanya milik kriteria saat ini
                                         $filteredSubs = $subCriterias->where('criteria_id', $c->id);
                                         $no = 1;
                                     @endphp
@@ -66,18 +68,23 @@
                                                 <td>{{ $no++ }}</td>
                                                 <td>
                                                     @if ($s->nilai_minimum !== null || $s->nilai_maksimum !== null)
-                                                        <span class="badge bg-light text-dark border">
-                                                            {{ number_format($s->nilai_minimum, 0, ',', '.') }} -
-                                                            {{ number_format($s->nilai_maksimum, 0, ',', '.') }}
+                                                        <span class="badge bg-light text-dark border py-2 px-3 fs-7">
+                                                            @if ($namaKriteriaClean === 'harga')
+                                                                Rp {{ number_format($s->nilai_minimum, 0, ',', '.') }} - Rp {{ number_format($s->nilai_maksimum, 0, ',', '.') }}
+                                                            @elseif (in_array($namaKriteriaClean, ['fasilitas', 'keamanan', 'kebersihan']))
+                                                                {{ $s->nilai_minimum }}% - {{ $s->nilai_maksimum }}%
+                                                            @elseif ($namaKriteriaClean === 'jarak')
+                                                                {{ number_format($s->nilai_minimum, 0, ',', '.') }} m - {{ number_format($s->nilai_maksimum, 0, ',', '.') }} m
+                                                            @else
+                                                                {{ number_format($s->nilai_minimum, 0, ',', '.') }} - {{ number_format($s->nilai_maksimum, 0, ',', '.') }}
+                                                            @endif
                                                         </span>
                                                     @else
                                                         <span class="text-muted">—</span>
                                                     @endif
                                                 </td>
                                                 <td><span class="fw-semibold">{{ $s->keterangan }}</span></td>
-                                                <td><span
-                                                        class="badge bg-primary px-3 py-2 fs-6">{{ $s->nilai }}</span>
-                                                </td>
+                                                <td><span class="badge bg-primary px-3 py-2 fs-6">{{ $s->nilai }}</span></td>
                                                 <td>
                                                     <button class="btn btn-sm btn-warning text-white" data-bs-toggle="modal"
                                                         data-bs-target="#editSubKriteriaModal{{ $s->id }}">Edit</button>
@@ -95,58 +102,47 @@
                                             <div class="modal fade" id="editSubKriteriaModal{{ $s->id }}"
                                                 tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog">
-                                                    <form action="{{ route('sub-kriteria.update', $s->id) }}"
-                                                        method="POST">
+                                                    <form action="{{ route('sub-kriteria.update', $s->id) }}" method="POST">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title">Edit Sub Kriteria:
-                                                                    {{ $c->nama_kriteria }}</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal"></button>
+                                                                <h5 class="modal-title">Edit Sub Kriteria: {{ $c->nama_kriteria }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <input type="hidden" name="criteria_id"
-                                                                    value="{{ $s->criteria_id }}">
+                                                                <input type="hidden" name="criteria_id" value="{{ $s->criteria_id }}">
 
-                                                                @if (strtolower(trim($c->nama_kriteria)) === 'harga' || strtolower(trim($c->nama_kriteria)) === 'jarak')
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-6">
-                                                                            <label class="form-label">Nilai Minimum</label>
-                                                                            <input type="number" name="nilai_minimum"
-                                                                                class="form-control"
-                                                                                value="{{ $s->nilai_minimum }}" required>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <label class="form-label">Nilai Maksimum</label>
-                                                                            <input type="number" name="nilai_maksimum"
-                                                                                class="form-control"
-                                                                                value="{{ $s->nilai_maksimum }}" required>
-                                                                        </div>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label">
+                                                                            Nilai Minimum 
+                                                                            @if($namaKriteriaClean === 'harga') (Rp) @elseif(in_array($namaKriteriaClean, ['fasilitas', 'keamanan', 'kebersihan'])) (%) @elseif($namaKriteriaClean === 'jarak') (m) @endif
+                                                                        </label>
+                                                                        <input type="number" name="nilai_minimum" class="form-control" value="{{ $s->nilai_minimum }}" required>
                                                                     </div>
-                                                                @endif
+                                                                    <div class="col-6">
+                                                                        <label class="form-label">
+                                                                            Nilai Maksimum 
+                                                                            @if($namaKriteriaClean === 'harga') (Rp) @elseif(in_array($namaKriteriaClean, ['fasilitas', 'keamanan', 'kebersihan'])) (%) @elseif($namaKriteriaClean === 'jarak') (m) @endif
+                                                                        </label>
+                                                                        <input type="number" name="nilai_maksimum" class="form-control" value="{{ $s->nilai_maksimum }}" required>
+                                                                    </div>
+                                                                </div>
 
                                                                 <div class="mb-3">
-                                                                    <label class="form-label">Keterangan Sub
-                                                                        Kriteria</label>
-                                                                    <input type="text" name="keterangan"
-                                                                        class="form-control" value="{{ $s->keterangan }}"
-                                                                        required>
+                                                                    <label class="form-label">Keterangan Sub Kriteria</label>
+                                                                    <input type="text" name="keterangan" class="form-control" value="{{ $s->keterangan }}" required>
                                                                 </div>
 
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Nilai / Bobot Sub</label>
-                                                                    <input type="number" name="nilai"
-                                                                        class="form-control" value="{{ $s->nilai }}"
-                                                                        min="1" max="5" required>
+                                                                    <input type="number" name="nilai" class="form-control" value="{{ $s->nilai }}" min="1" max="5" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" class="btn btn-primary">Simpan
-                                                                    Perubahan</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -179,50 +175,34 @@
                             <select name="criteria_id" id="selectKriteriaUtama" class="form-select" required>
                                 <option value="" disabled selected>-- Pilih Kriteria --</option>
                                 @foreach ($criterias as $c)
-                                    <option value="{{ $c->id }}"
-                                        data-nama="{{ strtolower(trim($c->nama_kriteria)) }}">{{ $c->nama_kriteria }}
-                                    </option>
+                                    <option value="{{ $c->id }}" data-nama="{{ strtolower(trim($c->nama_kriteria)) }}">{{ $c->nama_kriteria }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="row mb-3 d-none" id="inputRentangWrapper">
                             <div class="col-6">
-                                <label class="form-label">Nilai Minimum</label>
-                                <input type="number" name="nilai_minimum" id="nilaiMinimum" class="form-control"
-                                    placeholder="Contoh: 0">
+                                <label class="form-label" id="labelMin">Nilai Minimum</label>
+                                <input type="number" name="nilai_minimum" id="nilaiMinimum" class="form-control" placeholder="0">
                             </div>
                             <div class="col-6">
-                                <label class="form-label">Nilai Maksimum</label>
-                                <input type="number" name="nilai_maksimum" id="nilaiMaksimum" class="form-control"
-                                    placeholder="Contoh: 500000">
+                                <label class="form-label" id="labelMax">Nilai Maksimum</label>
+                                <input type="number" name="nilai_maksimum" id="nilaiMaksimum" class="form-control" placeholder="100">
                             </div>
+                            <small class="text-muted mt-1 d-none" id="hintPersen">💡 Masukkan angka persentase rentang (Contoh: Min 81, Max 100)</small>
                         </div>
 
                         <div class="mb-3 d-none" id="dropdownKeteranganWrapper">
                             <label class="form-label">Label Keterangan Sub Kriteria</label>
-                            <select name="nama_sub_kriteria_manual" id="namaSubManual" class="form-select">
-                            </select>
-                        </div>
-
-                        <div class="mb-3 d-none" id="inputFasilitasWrapper">
-                            <label class="form-label">Pilih Item Fasilitas Master</label>
-                            <select name="nama_sub_kriteria_fasilitas" id="namaSubFasilitas" class="form-select">
-                                <option value="" disabled selected>-- Pilih Fasilitas --</option>
-                                @foreach ($fasilitas as $f)
-                                    <option value="{{ $f->nama_fasilitas }}">{{ $f->nama_fasilitas }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-muted d-block mt-1">💡 List ini diambil otomatis dari tabel master fasilitas
-                                kamu.</small>
+                            <select name="keterangan" id="namaSubManual" class="form-select"></select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Nilai Bobot TOPSIS (Skala 1 - 5)</label>
                             <select name="nilai" class="form-select" required>
                                 <option value="" disabled selected>-- Pilih Skala Nilai --</option>
-                                <option value="5">5 (Sangat Baik / Sangat Murah / Sangat Dekat)</option>
-                                <option value="4">4 (Baik / Murah / Dekat)</option>
+                                <option value="5">5 (Sangat Baik / Sangat Murah / Sangat Lengkap)</option>
+                                <option value="4">4 (Baik / Murah / Lengkap)</option>
                                 <option value="3">3 (Cukup)</option>
                                 <option value="2">2 (Kurang / Buruk)</option>
                                 <option value="1">1 (Sangat Kurang / Sangat Buruk)</option>
@@ -242,6 +222,7 @@
         const opsiKeterangan = {
             harga: ["Sangat Murah", "Murah", "Cukup", "Mahal", "Sangat Mahal"],
             jarak: ["Sangat Dekat", "Dekat", "Cukup Dekat", "Jauh", "Sangat Jauh"],
+            fasilitas: ["Sangat Lengkap", "Lengkap", "Cukup Lengkap", "Kurang Lengkap", "Tidak Lengkap"],
             keamanan: ["Sangat Aman", "Aman", "Cukup Aman", "Kurang Aman", "Tidak Aman"],
             kebersihan: ["Sangat Bersih", "Bersih", "Cukup Bersih", "Kurang Bersih", "Kotor"]
         };
@@ -252,34 +233,33 @@
 
             var rentangWrapper = document.getElementById('inputRentangWrapper');
             var keteranganWrapper = document.getElementById('dropdownKeteranganWrapper');
-            var fasilitasWrapper = document.getElementById('inputFasilitasWrapper');
+            var hintPersen = document.getElementById('hintPersen');
 
             var nilaiMinimum = document.getElementById('nilaiMinimum');
             var nilaiMaksimum = document.getElementById('nilaiMaksimum');
             var selectKeterangan = document.getElementById('namaSubManual');
-            var selectFasilitas = document.getElementById('namaSubFasilitas');
 
-            // Reset view modal input
             rentangWrapper.classList.add('d-none');
             keteranganWrapper.classList.add('d-none');
-            fasilitasWrapper.classList.add('d-none');
+            hintPersen.classList.add('d-none');
 
             nilaiMinimum.removeAttribute('required');
             nilaiMaksimum.removeAttribute('required');
             selectKeterangan.removeAttribute('required');
-            selectFasilitas.removeAttribute('required');
 
             nilaiMinimum.value = "";
             nilaiMaksimum.value = "";
             selectKeterangan.innerHTML = '';
-            selectFasilitas.selectedIndex = 0;
 
             if (opsiKeterangan[namaKriteria]) {
+                rentangWrapper.classList.remove('d-none');
                 keteranganWrapper.classList.remove('d-none');
+                
+                nilaiMinimum.setAttribute('required', 'required');
+                nilaiMaksimum.setAttribute('required', 'required');
                 selectKeterangan.setAttribute('required', 'required');
-                selectKeterangan.innerHTML =
-                    `<option value="" disabled selected>-- Pilih Keterangan ${selectedOption.text} --</option>`;
 
+                selectKeterangan.innerHTML = `<option value="" disabled selected>-- Pilih Keterangan ${selectedOption.text} --</option>`;
                 opsiKeterangan[namaKriteria].forEach(function(item) {
                     var option = document.createElement('option');
                     option.value = item;
@@ -287,18 +267,20 @@
                     selectKeterangan.appendChild(option);
                 });
 
-                if (namaKriteria === 'harga' || namaKriteria === 'jarak') {
-                    rentangWrapper.classList.remove('d-none');
-                    nilaiMinimum.setAttribute('required', 'required');
-                    nilaiMaksimum.setAttribute('required', 'required');
+                if (['fasilitas', 'keamanan', 'kebersihan'].includes(namaKriteria)) {
+                    hintPersen.classList.remove('d-none');
+                    nilaiMinimum.placeholder = "0";
+                    nilaiMaksimum.placeholder = "100";
+                } else if (namaKriteria === 'harga') {
+                    nilaiMinimum.placeholder = "Contoh: 0";
+                    nilaiMaksimum.placeholder = "Contoh: 300000";
+                } else {
+                    nilaiMinimum.placeholder = "Dalam meter. Contoh: 0";
+                    nilaiMaksimum.placeholder = "Dalam meter. Contoh: 500";
                 }
-            } else if (namaKriteria === 'fasilitas') {
-                fasilitasWrapper.classList.remove('d-none');
-                selectFasilitas.setAttribute('required', 'required');
             }
         });
 
-        // Menjaga agar tulisan tab aktif berwarna tegas
         var tabEl = document.querySelectorAll('button[data-bs-toggle="tab"]')
         tabEl.forEach(function(el) {
             el.addEventListener('shown.bs.tab', function(event) {

@@ -4,96 +4,59 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">
-        <h5>Penilaian Alternatif (Data Kost)</h5>
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-dark">Matriks Keputusan (Otomatis)</h5>
+        <span class="badge bg-success px-3 py-2">✨ Terisi Otomatis dari Data Kos</span>
     </div>
 
     <div class="card-body">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nama Kost</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($kosts as $key => $k)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td><span class="fw-bold">{{ $k->nama_kost }}</span></td>
-                    <td>
-                        @php $count = $k->penilaianAlternatif->count(); @endphp
-                        @if($count >= $totalKriteria)
-                            <span class="badge bg-success">Lengkap</span>
-                        @else
-                            <span class="badge bg-warning">Belum Lengkap ({{ $count }}/{{ $totalKriteria }})</span>
-                        @endif
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#penilaianModal{{ $k->id }}">
-                            Input Nilai
-                        </button>
-                    </td>
-                </tr>
-
-                <div class="modal fade" id="penilaianModal{{ $k->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <form action="{{ route('penilaian-alternatif.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="kost_id" value="{{ $k->id }}">
-                            
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Penilaian: {{ $k->nama_kost }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        @foreach($criterias as $c)
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold">{{ $c->nama_kriteria }}</label>
-                                                
-                                                {{-- Cari nilai yang sudah tersimpan untuk kriteria ini di kost ini --}}
-                                                @php 
-                                                    $currentVal = $k->penilaianAlternatif->where('criteria_id', $c->id)->first()?->nilai; 
-                                                @endphp
-
-                                                @if($c->subCriteria->count() > 0)
-                                                    <select name="nilai[{{ $c->id }}]" class="form-select" required>
-                                                        <option value="" disabled selected>-- Pilih --</option>
-                                                        @foreach($c->subCriteria as $sub)
-                                                            <option value="{{ $sub->nilai }}" {{ $currentVal == $sub->nilai ? 'selected' : '' }}>
-                                                                {{ $sub->nama_sub_kriteria }} ({{ $sub->nilai }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                @else
-                                                    <input type="number" step="any" name="nilai[{{ $c->id }}]" class="form-control" value="{{ $currentVal }}" required>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Simpan Penilaian</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 5%" rowspan="2" class="align-middle">#</th>
+                        <th rowspan="2" class="align-middle text-start">Nama Kost</th>
+                        <th colspan="{{ $totalKriteria }}" class="text-center">Kriteria (Nilai Bobot TOPSIS 1-5)</th>
+                    </tr>
+                    <tr>
+                        @foreach($criterias as $c)
+                            <th>{{ $c->nama_kriteria }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($kosts as $key => $k)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td class="text-start"><span class="fw-bold text-dark">{{ $k->nama_kost }}</span></td>
+                        
+                        @foreach($criterias as $c)
+                            @php
+                                $dataMatriks = $k->matriks[$c->id] ?? ['bobot' => 1, 'riil' => 0];
+                            @endphp
+                            <td>
+                                <span class="badge bg-primary px-3 py-2 fs-6" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      title="Nilai Riil: {{ $dataMatriks['riil'] }}">
+                                    {{ $dataMatriks['bobot'] }}
+                                </span>
+                            </td>
+                        @endforeach
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
 @endsection

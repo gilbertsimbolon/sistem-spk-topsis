@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin\Topsis;
 
 use App\Http\Controllers\Controller;
 use App\Models\Criteria;
+use App\Models\Fasilitas;
+use App\Models\Keamanan;
+use App\Models\Kebersihan;
 use App\Models\Kost;
 use App\Models\PenilaianAlternatif;
+use App\Models\SubCriteria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PenilaianAlternatifController extends Controller
 {
@@ -16,16 +19,61 @@ class PenilaianAlternatifController extends Controller
      */
     public function index()
     {
-        // ambil kost dengan relasi ke penilaian alternatif
-        $kosts = Kost::with('penilaianAlternatif')->get();
-        
-        // ambil kriteria 
-        $criterias = Criteria::whereNotIn(DB::raw('LOWER(nama_kriteria)'), ['harga', 'fasilitas'])
-                             ->with('subCriteria')
-                             ->get();
-        
-        // 3. Total kriteria yang harus dinilai manual (untuk indikator badge lengkap/tidak)
+        // ambil data kost beserta relasi
+        $kosts = Kost::with(['fasilitas', 'keamanan', 'kebersihan'])->get();
+
+        // ambil semua sub kriteria
+        $criterias = Criteria::with('subCriteria')->get();
         $totalKriteria = $criterias->count();
+
+        // ambil total master data
+        $totalMasterFasilitas = Fasilitas::count();
+        $totalMasterKeamanan  = Keamanan::count();
+        $totalMasterKebersihan = Kebersihan::count();
+
+        // otomatisasi nilai
+        foreach ($kosts as $kost) {
+            $matriksKost = [];
+
+            foreach ($criterias as $criteria) {
+                $namaKriteriaClean = strtolower(trim($criteria->nama_kriteria));
+                $nilaiRiil = 0;
+
+                if (in_array($namaKriteriaClean, ['fasilitas', 'keamanan', 'kebersihan'])) {
+
+                    // menghitung jumlah item yang dicentang untuk kriteria berbasis relasi
+                    $jumlahDicentang = $kost->$namaKriteriaClean ? $kost->$namaKriteriaClean->count() : 0;
+
+                    // hitung persentase
+                    if ($namaKriteriaClean === 'fasilitas') {
+                        $nilaiRiil = $totalMasterFasilitas > 0 ? ($jumlahDicentang / $totalMasterFasilitas) * 100 : 0;
+                    } elseif ($namaKriteriaClean === 'keamanan') {
+                        $nilaiRiil = $totalMasterKeamanan > 0 ? ($jumlahDicentang / $totalMasterKeamanan) * 100 : 0;
+                    } else {
+                        $nilaiRiil = $totalMasterKebersihan > 0 ? ($jumlahDicentang / $totalMasterKebersihan) * 100 : 0;
+                    }
+
+                }
+                // untuk kriteria yang menggunakan angka biasa
+                else {
+                    $nilaiRiil = $kost->$namaKriteriaClean ?? 0;
+                }
+
+                // cari sub kriteria yang sesuai dengan nilai riil
+                $sub = SubCriteria::where('criteria_id', $criteria->id)
+                    ->where('nilai_minimum', '<=', $nilaiRiil)
+                    ->where('nilai_maksimum', '>=', $nilaiRiil)
+                    ->first();
+
+                // simpan hasil
+                $matriksKost[$criteria->id] = [
+                    'bobot' => $sub ? $sub->nilai : 1,
+                    'riil' => is_numeric($nilaiRiil) ? round($nilaiRiil, 0) : 0
+                ];
+            }
+
+            $kost->matriks = $matriksKost;
+        }
 
         return view('admin.pages.topsis.penilaian-alternatif', compact('kosts', 'criterias', 'totalKriteria'));
     }
@@ -63,7 +111,7 @@ class PenilaianAlternatifController extends Controller
             );
         }
 
-        return redirect()->back()->with('success', 'Penilaian berhasil disimpan!');
+        return redirect()->back()->with('success', 'Sistem berjalan otomatis.');
     }
 
     /**
