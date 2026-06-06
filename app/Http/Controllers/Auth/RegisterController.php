@@ -19,16 +19,22 @@ class RegisterController extends Controller
     // Fungsi Register
     public function create(Request $request)
     {
+        // dd($request->all());
+
         // Validasi Data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|unique:users,email',
             'fakultas' => 'required|in:fatek,fish,feb,fikkm,fbs,fipp,fke',
             'password' => 'required|min:8',
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar!',
+            'email.email' => 'Format email tidak valid!',
+            'password.min' => 'Password minimal harus 8 karakter!',
         ]);
 
         // Jika validasi gagal.
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
