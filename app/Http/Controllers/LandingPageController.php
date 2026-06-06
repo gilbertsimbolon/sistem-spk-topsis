@@ -15,9 +15,14 @@ use Illuminate\Http\Request;
 class LandingPageController extends Controller
 {
     // get data kost
-    public function kost()
+    public function kost(Request $request)
     {
-        $kosts = Kost::with(['jenis', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'daerah'])->get();
+        $kosts = Kost::with(['jenis', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'daerah'])->paginate(8);
+
+
+        if ($request->ajax()) {
+            return view('partials.kost_list', compact('kosts'))->render();
+        }
 
         $jenis = JenisKost::all();
         $daerah = DaerahKost::all();

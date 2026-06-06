@@ -42,6 +42,34 @@
                 font-size: 14px;
             }
         }
+
+        /* Menyembunyikan teks info tulisan cetak kecil bawaan Laravel */
+        .pagination-ajax .flex-1.flex.justify-between,
+        .pagination-ajax p.text-sm.text-gray-700 {
+            display: none !important;
+        }
+
+        /* Memastikan tombol angka Bootstrap berada tepat di tengah */
+        .pagination-ajax nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Membuat tampilan tombol navigasi sedikit lebih modern */
+        .pagination-ajax .page-link {
+            color: #0d6efd;
+            /* Warna utama biru Bootstrap */
+            border-radius: 6px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+        }
+
+        .pagination-ajax .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
     </style>
 
 </head>
@@ -191,55 +219,49 @@
                 </div>
             </div>
 
-            <div class="row g-4" id="kost-container">
-                @foreach ($kosts as $kos)
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 kost-item d-none">
-                        <a class="card border-0 shadow-sm h-100 text-decoration-none text-dark card-hover"
-                            href="{{ route('login') }}">
-                            <div class="position-relative">
-                                <img src="{{ $kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg') }}"
-                                    class="card-img-top kost-img" style="height: 200px; object-fit: cover;"
-                                    alt="kost">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    {{ $kos->jenis->jenis_kost ?? 'Tidak Ada Jenis' }}
-                                </span>
-                            </div>
-                            <div class="card-body d-flex flex-column justify-content-between">
-                                <div>
-                                    <h6 class="fw-bold mb-1 text-truncate-2">{{ $kos->nama_kost }}</h6>
-                                    <small class="text-muted d-block mb-2">
-                                        <i
-                                            class="bi bi-geo-alt-fill me-1"></i>{{ $kos->daerah->name ?? 'Tidak Ada Daerah' }}
-                                    </small>
-                                    <p class="text-muted small text-truncate mb-3">
-                                        {{ $kos->fasilitas->isEmpty() ? 'Tidak Ada Fasilitas' : $kos->fasilitas->implode('keterangan', ', ') }}
-                                    </p>
+            <div id="ajax-kost-container">
+                <div class="row g-4">
+                    @foreach ($kosts as $kos)
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <a class="card border-0 shadow-sm h-100 text-decoration-none text-dark"
+                                href="{{ route('login') }}">
+                                <div class="position-relative">
+                                    <img src="{{ $kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg') }}"
+                                        class="card-img-top kost-img" style="height: 200px; object-fit: cover;"
+                                        alt="kost">
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                                        {{ $kos->jenis->jenis_kost ?? 'Tidak Ada Jenis' }}
+                                    </span>
                                 </div>
-                                <h6 class="text-primary fw-bold mb-0">Rp
-                                    {{ number_format($kos->harga, 0, ',', '.') }}<span
-                                        class="text-muted small fw-normal">/bulan</span></h6>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-
-            @if ($kosts->count() > 4)
-                <div class="row mt-5">
-                    <div class="col-12 text-center">
-                        <button type="button" id="btn-load-more"
-                            class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
-                            Tampilkan Lebih Banyak <i class="bi bi-chevron-down ms-1"></i>
-                        </button>
-                    </div>
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-truncate">{{ $kos->nama_kost }}</h6>
+                                        <small class="text-muted d-block mb-2">
+                                            {{ $kos->daerah->name ?? 'Tidak Ada Daerah' }}
+                                        </small>
+                                        <p class="text-muted small text-truncate mb-3">
+                                            {{ $kos->fasilitas->isEmpty() ? 'Tidak Ada Fasilitas' : $kos->fasilitas->implode('keterangan', ', ') }}
+                                        </p>
+                                    </div>
+                                    <h6 class="text-primary fw-bold mb-0">Rp
+                                        {{ number_format($kos->harga, 0, ',', '.') }}<span
+                                            class="text-muted small fw-normal">/bln</span></h6>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
                 </div>
-            @endif
+
+                <div class="d-flex justify-content-center mt-5 pagination-ajax">
+                    {{ $kosts->links() }}
+                </div>
+            </div>
 
         </div>
     </section>
 
     <!-- Section FAQ -->
-    <section id="faq" class="d-flex align-items-center mb-5">
+    <section id="faq" class="d-flex align-items-center mb-5 mt-5">
         <div class="container">
 
             <div class="text-center mb-2">
@@ -462,36 +484,43 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const itemsPerLoad = 4; // Jumlah item yang ditampilkan setiap klik
-            const items = document.querySelectorAll('.kost-item');
-            const btnLoadMore = document.getElementById('btn-load-more');
-            let currentDisplayed = 0;
+            const container = document.getElementById('ajax-kost-container');
 
-            // Fungsi untuk menampilkan item
-            function showNextItems() {
-                let nextLimit = currentDisplayed + itemsPerLoad;
+            container.addEventListener('click', function(e) {
+                const targetLink = e.target.closest('.pagination a');
 
-                for (let i = currentDisplayed; i < nextLimit && i < items.length; i++) {
-                    items[i].classList.remove('d-none');
-                    currentDisplayed++;
+                if (targetLink) {
+                    e.preventDefault();
+
+                    const url = targetLink.getAttribute('href');
+                    if (url) {
+                        fetchData(url);
+                    }
                 }
+            });
 
-                // Jika semua item sudah tampil, sembunyikan tombol
-                if (currentDisplayed >= items.length && btnLoadMore) {
-                    btnLoadMore.remove();
-                }
-            }
+            function fetchData(url) {
+                // efek transisi
+                container.style.opacity = '0.5';
 
-            // Jalankan pertama kali saat halaman dimuat
-            if (items.length > 0) {
-                showNextItems();
-            }
+                fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        container.innerHTML = html;
+                        container.style.opacity = '1';
 
-            // Event saat tombol klik
-            if (btnLoadMore) {
-                btnLoadMore.addEventListener('click', function() {
-                    showNextItems();
-                });
+                        document.getElementById('kost').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching pagination data:', error);
+                        container.style.opacity = '1';
+                    });
             }
         });
     </script>
