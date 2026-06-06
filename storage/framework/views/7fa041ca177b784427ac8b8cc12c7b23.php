@@ -8,6 +8,8 @@
 
     <title><?php echo $__env->yieldContent('title'); ?></title>
 
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+
     <meta name="description" content="" />
 
     <!-- Website Icon -->

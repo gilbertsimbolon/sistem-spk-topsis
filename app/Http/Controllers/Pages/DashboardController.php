@@ -66,7 +66,7 @@ class DashboardController extends Controller
         $kosts = $query->paginate(8)->appends($request->query());
 
         if ($request->ajax()) {
-            return view('partials.kost_list', compact('kosts'))->render();
+            return view('user.partials.kost_list', compact('kosts'))->render();
         }
 
         $jenis = JenisKost::all();

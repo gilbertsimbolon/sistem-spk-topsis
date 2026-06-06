@@ -1,7 +1,8 @@
 <div class="row g-4">
-    @foreach ($kosts as $kos)
+    @forelse ($kosts as $kos)
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{{ route('login') }}" class="text-decoration-none text-dark d-block h-100">
+            {{-- PERBAIKAN: Mengubah route dari 'login' ke detail kost yang sah --}}
+            <a href="{{ route('dashboard.kost.show', $kos->id) }}" class="text-decoration-none text-dark d-block h-100">
                 <div class="card border-0 shadow-sm h-100 kost-card">
                     <div class="position-relative">
                         <img src="{{ $kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg') }}"
@@ -25,7 +26,12 @@
                 </div>
             </a>
         </div>
-    @endforeach
+    @empty
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-house-x text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">Tidak ada kamar kost yang cocok dengan kriteria filter Anda.</p>
+        </div>
+    @endforelse
 </div>
 
 <div class="d-flex justify-content-center mt-5 pagination-ajax">
