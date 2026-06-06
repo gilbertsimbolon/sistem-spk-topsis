@@ -38,7 +38,7 @@ class LoginController extends Controller
             if ($user->role === 'admin') { // jika role admin, maka akan dilempar ke halaman dashboard admin
                 return redirect()->route('admin.dashboard.index');
             } elseif ($user->role === 'owner') {
-                return redirect()->route('kost.index');
+                return redirect()->route('owner.kost.index');
             } else {
                 return redirect()->route('dashboard.index');
             }

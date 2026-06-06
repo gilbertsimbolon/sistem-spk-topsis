@@ -4,7 +4,7 @@
 
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Daftar Kost tolSaya</h5>
+        <h5 class="mb-0">Daftar Kost Saya</h5>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCreate">
             + Tambah Kost
         </button>
@@ -23,7 +23,8 @@
         <div class="row">
             <?php $__empty_1 = true; $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="col-md-4 mb-4">
-                <a href="<?php echo e(route('kost.show', $k->id)); ?>" class="text-decoration-none text-dark">
+                
+                <a href="<?php echo e(route('owner.kost.show', $k->id)); ?>" class="text-decoration-none text-dark">
                     <div class="card h-100 shadow-sm">
 
                         <?php if($k->foto->count()): ?>
@@ -64,7 +65,8 @@
 <div class="modal fade" id="modalCreate" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="<?php echo e(route('kost.store')); ?>" method="POST" enctype="multipart/form-data">
+            
+            <form action="<?php echo e(route('owner.kost.store')); ?>" method="POST" enctype="multipart/form-data">
                 <?php echo csrf_field(); ?>
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Kost</h5>

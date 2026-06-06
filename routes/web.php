@@ -18,10 +18,12 @@ use App\Http\Controllers\Admin\Topsis\TopsisController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\Owner\OwnerFotoController;
+use App\Http\Controllers\Owner\OwnerKostController;
 use App\Http\Controllers\Pages\ComingSoonController;
 use App\Http\Controllers\Pages\DashboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Pages\ProfileUserController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -103,12 +105,11 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/laporan-kost', [LaporanController::class, 'dataKost'])->name('laporan.kost');
 });
 
-Route::prefix('/owner')->middleware(['auth', 'role:owner'])->group(function () {
-    // Halaman Data Kost Khusus Owner
-    Route::resource('/kost', \App\Http\Controllers\Owner\KostController::class);
+Route::prefix('/owner')->middleware(['auth', 'role:owner'])->name('owner.')->group(function () {
+    Route::resource('/kost', OwnerKostController::class);
     // Rute foto khusus untuk owner
-    Route::post('/kost/{kost}/foto', [\App\Http\Controllers\Owner\FotoController::class, 'store'])->name('owner.kost-foto.store');
-    Route::delete('/kost-foto/{foto}', [\App\Http\Controllers\Owner\FotoController::class, 'destroy'])->name('owner.kost-foto.destroy');
+    Route::post('/kost/{kost}/foto', [OwnerFotoController::class, 'store'])->name('kost-foto.store');
+    Route::delete('/kost-foto/{foto}', [OwnerFotoController::class, 'destroy'])->name('kost-foto.destroy');
 });
 
 Route::get('coming-soon', [ComingSoonController::class, 'index'])->middleware('auth')->name('coming-soon');

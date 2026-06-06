@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class KostController extends Controller
+class OwnerKostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -56,12 +56,16 @@ class KostController extends Controller
      */
     public function store(Request $request)
     {
+        // PERBAIKAN VALIDASI: Menjamin sistem menerima segala jenis aspek rasio foto layout apa saja
+        // Batasan ukuran dinaikkan menjadi max 5MB (5120 KB) karena kamera portrait HP resolusinya besar
         $request->validate([
             'nama_kost' => 'required|string|max:255',
             'alamat' => 'required|string',
             'harga' => 'required|numeric',
             'jenis_kost_id' => 'required',
             'daerah_kost_id' => 'required',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         DB::beginTransaction(); // Memulai transaksi agar data tidak setengah tersimpan
@@ -77,24 +81,26 @@ class KostController extends Controller
                 'daerah_kost_id' => $request->daerah_kost_id,
             ]);
 
-            // 2. ATTACH RELASI (sudah aman karena $kost sudah punya ID)
+            // 2. ATTACH RELASI
             $kost->fasilitas()->attach($request->fasilitas ?? []);
             $kost->keamanan()->attach($request->keamanan ?? []);
             $kost->kebersihan()->attach($request->kebersihan ?? []);
 
-            // 3. UPLOAD FOTO
+            // 3. UPLOAD FOTO (Mendukung Multi-Layout Portrait/Landscape)
             if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
                     $path = $file->store('kost', 'public');
                     FotoKost::create([
-                        'kost_id' => $kost->id, // Sekarang $kost->id sudah ada
+                        'kost_id' => $kost->id,
                         'foto' => $path
                     ]);
                 }
             }
 
             DB::commit(); // Simpan semua perubahan
-            return redirect()->route('kost.index')->with('success', 'Data kost berhasil ditambahkan!');
+            
+            // PERBAIKAN ROUTE: Menyesuaikan ke rute alias group owner yang sah
+            return redirect()->route('owner.kost.index')->with('success', 'Data kost berhasil ditambahkan!');
             
         } catch (\Exception $e) {
             DB::rollback(); // Jika error, batalkan semua proses
@@ -134,41 +140,54 @@ class KostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // PERBAIKAN VALIDASI UPDATE: Mengizinkan semua ekstensi gambar modern dengan kapasitas ukuran besar
         $request->validate([
             'nama_kost' => 'required|string|max:255',
             'alamat' => 'required|string',
             'harga' => 'required|numeric',
             'jenis_kost_id' => 'required',
             'daerah_kost_id' => 'required',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         // Pastikan hanya bisa update kost miliknya sendiri
         $kost = Kost::where('id', $id)->where('owner_id', Auth::id())->firstOrFail();
 
-        if ($request->hasFile('foto')) {
+        DB::beginTransaction();
+
+        try {
+            if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
                     $path = $file->store('kost', 'public');
-
                     $kost->foto()->create([
                         'foto' => $path
                     ]);
                 }
             }
 
-        $kost->update([
-            'nama_kost' => $request->nama_kost,
-            'alamat' => $request->alamat,
-            'harga' => $request->harga,
-            'jenis_kost_id' => $request->jenis_kost_id,
-            'daerah_kost_id' => $request->daerah_kost_id,
-        ]);
+            $kost->update([
+                'nama_kost' => $request->nama_kost,
+                'alamat' => $request->alamat,
+                'harga' => $request->harga,
+                'jenis_kost_id' => $request->jenis_kost_id,
+                'daerah_kost_id' => $request->daerah_kost_id,
+            ]);
 
-        // Sync relasi (menghapus yang lama dan mengganti dengan yang baru dicentang)
-        $kost->fasilitas()->sync($request->fasilitas ?? []);
-        $kost->keamanan()->sync($request->keamanan ?? []);
-        $kost->kebersihan()->sync($request->kebersihan ?? []);
+            // Sync relasi (menghapus yang lama dan mengganti dengan yang baru dicentang)
+            $kost->fasilitas()->sync($request->fasilitas ?? []);
+            $kost->keamanan()->sync($request->keamanan ?? []);
+            $kost->kebersihan()->sync($request->kebersihan ?? []);
 
-        return redirect()->route('kost.index')->with('success', 'Data kost berhasil diperbarui!');
+            DB::commit();
+            
+            // PERBAIKAN ROUTE: Diarahkan kembali ke indeks owner yang benar
+            return redirect()->route('owner.kost.index')->with('success', 'Data kost berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -179,6 +198,7 @@ class KostController extends Controller
         $kost = Kost::where('id', $id)->where('owner_id', Auth::id())->firstOrFail();
         $kost->delete();
 
-        return redirect()->route('kost.index')->with('success', 'Data kost berhasil dihapus!');
+        // PERBAIKAN ROUTE: Menyesuaikan rute sukses hapus data owner
+        return redirect()->route('owner.kost.index')->with('success', 'Data kost berhasil dihapus!');
     }
 }

@@ -6,7 +6,7 @@
 
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Daftar Kost tolSaya</h5>
+        <h5 class="mb-0">Daftar Kost Saya</h5>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCreate">
             + Tambah Kost
         </button>
@@ -24,7 +24,8 @@
         <div class="row">
             @forelse ($kosts as $k)
             <div class="col-md-4 mb-4">
-                <a href="{{ route('kost.show', $k->id) }}" class="text-decoration-none text-dark">
+                {{-- PERBAIKAN: Mengubah route ke 'owner.kost.show' --}}
+                <a href="{{ route('owner.kost.show', $k->id) }}" class="text-decoration-none text-dark">
                     <div class="card h-100 shadow-sm">
 
                         @if ($k->foto->count())
@@ -63,7 +64,8 @@
 <div class="modal fade" id="modalCreate" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="{{ route('kost.store') }}" method="POST" enctype="multipart/form-data">
+            {{-- PERBAIKAN: Mengubah form action ke 'owner.kost.store' --}}
+            <form action="{{ route('owner.kost.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Kost</h5>

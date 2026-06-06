@@ -142,7 +142,7 @@
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="<?php echo e(route('kost.index')); ?>" class="menu-link">
+                        <a href="<?php echo e(route('owner.kost.index')); ?>" class="menu-link">
                             <div class="text-truncate" data-i18n="Landing">Kelola Kost</div>
                         </a>
                     </li>
