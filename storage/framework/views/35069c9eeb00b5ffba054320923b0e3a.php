@@ -83,8 +83,8 @@
                     </div>
 
                     
-                    <?php if($kost->owner && $kost->owner->no_hp): ?>
-                        <a href="https://wa.me/<?php echo e(preg_replace('/[^0-9]/', '', $kost->owner->no_hp)); ?>?text=Halo,%20saya%20tertarik%20dengan%20Kost%20<?php echo e(urlencode($kost->nama_kost)); ?>%20yang%20ada%20di%20SIPKOST."
+                    <?php if($kost->owner && $kost->owner->nomor): ?>
+                        <a href="https://wa.me/<?php echo e(preg_replace('/[^0-9]/', '', $kost->owner->nomor)); ?>?text=Halo,%20saya%20tertarik%20dengan%20Kost%20<?php echo e(urlencode($kost->nama_kost)); ?>%20yang%20ada%20di%20SIPKOST."
                            target="_blank"
                            class="btn btn-success w-100 py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
                             <i class="bi bi-whatsapp fs-5"></i> Hubungi Pemilik Kost
