@@ -21,6 +21,7 @@
                     <th>No.</th>
                     <th>Nama</th>
                     <th>Email</th>
+                    <th>Nomor Telepon</th>
                     <th>Role</th>
                     <th>Actions</th>
                 </tr>
@@ -43,6 +44,11 @@
                     <!-- Email -->
                     <td>
                         {{ $owner->email }}
+                    </td>
+
+                    <!-- Nomor Telepon -->
+                    <td>
+                        {{ $owner->nomor }}
                     </td>
 
                     <!-- Role -->
@@ -150,6 +156,20 @@
                         </div>
                     </div>
                     <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-phone" name="nomor">Nomor Telepon</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="icon-base bx bx-phone"></i></span>
+                            <input
+                                type="text"
+                                name="nomor"
+                                id="basic-icon-default-phone"
+                                class="form-control"
+                                placeholder="081234567890"
+                                aria-label="081234567890"
+                                aria-describedby="basic-icon-default-phone2" />
+                        </div>
+                    </div>
+                    <div class="mb-6">
                         <label class="form-label" for="basic-icon-default-lock" name="password">Password</label>
                         <div class="input-group input-group-merge">
                             <span id="basic-icon-default-lock2" class="input-group-text"><i class="icon-base bx bx-lock-alt"></i></span>
@@ -233,6 +253,23 @@
                                 aria-describedby="basic-icon-default-email2" />
                         </div>
                     </div>
+                
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-phone" name="nomor">Nomor Telepon</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="icon-base bx bx-phone"></i></span>
+                            <input
+                                type="text"
+                                name="nomor"
+                                id="basic-icon-default-phone"
+                                class="form-control"
+                                placeholder="{{$o->nomor}}"
+                                value="{{$o->nomor}}"
+                                aria-label="{{$o->nomor}}"
+                                aria-describedby="basic-icon-default-phone2" />
+                        </div>
+                    </div>
+
                     <div class="mb-6">
                         <label class="form-label" for="basic-icon-default-lock" name="password">Password</label>
                         <div class="input-group input-group-merge">

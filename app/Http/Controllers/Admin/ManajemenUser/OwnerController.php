@@ -35,6 +35,7 @@ class OwnerController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|unique:users,email',
+            'nomor' => 'required|unique:users,nomor',
             'password' => 'required|min:8',
         ]);
 
@@ -48,6 +49,7 @@ class OwnerController extends Controller
             'name' => $request->name,
             'fakultas' => null,
             'email' => $request->email,
+            'nomor' => $request->nomor,
             'password' => bcrypt($request->password),
             'role' => 'owner',
         ]);
@@ -81,6 +83,7 @@ class OwnerController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|unique:users,email,' . $owners->id,
+            'nomor' => 'required|unique:users,nomor,' . $owners->id,
             'password' => 'nullable|min:8',
         ]);
 
@@ -93,6 +96,7 @@ class OwnerController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'nomor' => $request->nomor,
         ];
 
         // jika update password

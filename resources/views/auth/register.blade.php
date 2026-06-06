@@ -60,6 +60,15 @@
                                 @enderror
                             </div>
 
+                            <div class="mb-2">
+                                <label for="nomor" class="form-label">Nomor Telepon</label>
+                                <input type="text" class="form-control @error('nomor') is-invalid @enderror" id="nomor" name="nomor"
+                                    value="{{ old('nomor') }}" placeholder="Masukkan nomor telepon anda" />
+                                @error('nomor')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             {{-- Password --}}
                             <div class="form-password-toggle mb-2">
                                 <label class="form-label" for="password">Password</label>

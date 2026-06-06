@@ -36,6 +36,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'fakultas' => 'required',
             'email' => 'required|unique:users,email',
+            'nomor' => 'required|unique:users,nomor',
             'password' => 'required|min:8',
         ]);
 
@@ -49,6 +50,7 @@ class UserController extends Controller
             'name' => $request->name,
             'fakultas' => $request->fakultas,
             'email' => $request->email,
+            'nomor' => $request->nomor,
             'password' => bcrypt($request->password),
             'role' => 'user',
         ]);
@@ -83,6 +85,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'fakultas' => 'required',
             'email' => 'required|unique:users,email,'. $users->id,
+            'nomor' => 'required|unique:users,nomor,'. $users->id,
             'password' => 'nullable|min:8',
         ]);
 
@@ -96,6 +99,7 @@ class UserController extends Controller
             'name' => $request->name,
             'fakultas' => $request->fakultas,
             'email' => $request->email,
+            'nomor' => $request->nomor,
         ];
 
         // update password jika diisi
