@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     // Akses Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    Route::get('dashboard/kost/{id}', [DashboardController::class, 'show'])->name('dashboard.kost.show');
+
     Route::get('profile/user', [ProfileUserController::class, 'edit'])->name('profile.user.edit');
 
     Route::put('profile/user/update', [ProfileUserController::class, 'update'])->name('profile.user.update');

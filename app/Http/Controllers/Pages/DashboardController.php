@@ -36,4 +36,12 @@ class DashboardController extends Controller
         return view('user.pages.dashboard', compact('kosts', 'jenis', 'daerah', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'user'));
     }
 
+    public function show(string $id)
+    {
+        // Mengambil data kost tunggal beserta seluruh relasinya
+        $kost = Kost::with(['jenis', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'daerah', 'owner'])->findOrFail($id);
+
+        // Return ke halaman view khusus user yang baru saja dibuat
+        return view('user.pages.detail-kost', compact('kost'));
+    }
 }
