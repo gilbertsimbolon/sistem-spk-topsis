@@ -13,818 +13,287 @@
         ];
     ?>
 
-    <div class="">
+    
+    <style>
+        .kost-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .kost-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        .kost-img {
+            height: 180px;
+            object-fit: cover;
+        }
+        .criteria-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            height: 100%;
+        }
+    </style>
 
-        <!-- Rekomendasi Kost Terbaik Sesuai Fakultas -->
-        <div class="container mt-2">
+    <div class="py-4" id="dashboard-kost-section">
 
-            <!-- Header -->
-            <div class="row align-items-center mb-5">
-
-                <!-- Teks kiri -->
-                <div class="col-md-8">
-                    <h3 class="mb-0" style="line-height: 1.5;">
-                        Rekomendasi kost di, Fakultas <?php echo e($fakultas[Auth::user()->fakultas]); ?>
-
-                    </h3>
-
-                </div>
-
-                <!-- Tombol kanan -->
-                <div class="col-md-4 d-none d-md-flex justify-content-end gap-3">
-                    <div class="swiper-button-prev dashboard-prev position-static mt-0 text-dark"
-                        style="--swiper-navigation-size: 35px"></div>
-                    <div class="swiper-button-next dashboard-next position-static mt-0 text-dark"
-                        style="--swiper-navigation-size: 35px"></div>
-                </div>
-
+        <div class="container mb-5">
+            <div class="mb-4">
+                <h4 class="fw-bold text-dark mb-1">Kost-Kost Terbaik</h4>
             </div>
 
-            <!-- Swiper -->
-            <div class="swiper dashboardSwiper">
-                <div class="swiper-wrapper">
-                    <!-- Card 1 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
+            
+            <div id="ajax-dashboard-kost">
+                <div class="row g-4">
+                    <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <a href="<?php echo e(route('login')); ?>" class="text-decoration-none text-dark d-block h-100">
+                                <div class="card border-0 shadow-sm h-100 kost-card">
+                                    <div class="position-relative">
+                                        <img src="<?php echo e($kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg')); ?>"
+                                             class="card-img-top kost-img" alt="<?php echo e($kos->nama_kost); ?>">
+                                        <span class="badge bg-success position-absolute top-0 start-0 m-2 px-2.5 py-1.5 shadow-sm">
+                                            <?php echo e($kos->jenis->jenis_kost ?? 'Campur'); ?>
 
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
+                                        </span>
+                                    </div>
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <div>
+                                            <h6 class="fw-bold text-dark text-truncate mb-1" title="<?php echo e($kos->nama_kost); ?>"><?php echo e($kos->nama_kost); ?></h6>
+                                            <small class="text-muted d-block mb-2">
+                                                <i class="bi bi-geo-alt me-1"></i><?php echo e($kos->daerah->name ?? 'Tidak Ada Daerah'); ?>
+
+                                            </small>
+                                            <p class="text-secondary small text-truncate mb-3" title="<?php echo e($kos->fasilitas->implode('keterangan', ' • ')); ?>">
+                                                <?php echo e($kos->fasilitas->isEmpty() ? 'Fasilitas Standar' : $kos->fasilitas->implode('keterangan', ' • ')); ?>
+
+                                            </p>
+                                        </div>
+                                        <h6 class="text-primary fw-bold mb-0">Rp <?php echo e(number_format($kos->harga, 0, ',', '.')); ?><span class="text-muted fw-normal small">/bln</span></h6>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
+                            </a>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
 
-                        </a>
-                    </div>
+                
+                <div class="d-flex justify-content-center mt-5 pagination-ajax">
+                    <?php echo e($kosts->links()); ?>
 
-                    <!-- Card 2 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 5 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 6 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 7 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-
-                    <!-- Card 8 -->
-                    <div class="swiper-slide">
-                        <a href="#" class="text-decoration-none text-dark">
-
-                            <div class="card border-0 shadow-sm flex-fill kost-card">
-                                <div class="position-relative">
-                                    <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img" alt="kost">
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Campur</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Kost Cendrawasih</h6>
-                                    <small class="text-muted d-block">Tataaran Patar</small>
-                                    <p class="text-muted small text-truncate">WiFi • AC • Kamar Mandi Dalam</p>
-                                    <h6 class="text-primary fw-bold mb-0">Rp2.500.000/bulan</h6>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Filter Kost -->
-        <div class="container mt-2 mb-2">
-            <div class="mt-4">
-                <div class="card border-0 shadow-sm p-3">
-                    <div class="row g-3 align-items-center">
-
-                        <!-- Kota -->
-                        <div class="col-md-4">
-                            <small class="fw-bold">Fakultas</small>
+        <div class="container mb-5">
+            <div class="card border-0 shadow-sm border-start border-success border-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-search me-2"></i>Filter Pencarian</h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-muted">Fakultas</label>
                             <select class="form-select">
-                                <option>Fakultas Teknik</option>
-                                <option>Fakultas Bahasa dan Seni</option>
-                                <option>Fakultas Ilmu Sosial dan Hukum</option>
-                                <option>Fakultas Ilmu Keolahragaan dan Kesehatan Masyarakat</option>
-                                <option>Fakultas Ilmu Pendidikan</option>
-                                <option>Fakultas Kedokteran</option>
-                                <option>Fakultas Ekonomi dan Bisnis</option>
+                                <?php $__currentLoopData = $jenis ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option><?php echo e($j->jenis_kost); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
-
-                        <!-- Tipe Kost -->
-                        <div class="col-md-2">
-                            <small class="fw-bold">Daerah</small>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-muted">Daerah</label>
                             <select class="form-select">
-                                <option>Tataaran Patar</option>
-                                <option>Tataaran 1</option>
-                                <option>Tataaran 2</option>
-                                <option>Perum Blok A</option>
-                                <option>Perum Blok B</option>
-                                <option>Perum Blok C</option>
-                                <option>Perum Blok D</option>
-                                <option>Lorong SMA</option>
-                                <option>Lorong Pasar</option>
-                                <option>Lorong Bengkel</option>
-                                <option>Lorong Popay</option>
-                                <option>Lorong LAJ</option>
+                                <?php $__currentLoopData = $daerah ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option><?php echo e($d->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
-
-                        <!-- Tipe Sewa -->
                         <div class="col-md-2">
-                            <small class="fw-bold">Tipe Kos</small>
+                            <label class="form-label small fw-semibold text-muted">Tipe Kost</label>
                             <select class="form-select">
                                 <option>Campur</option>
                                 <option>Pria</option>
                                 <option>Wanita</option>
                             </select>
                         </div>
-
-                        <!-- Harga Min -->
                         <div class="col-md-2">
-                            <small class="fw-bold">Harga Minimum</small>
+                            <label class="form-label small fw-semibold text-muted">Harga Min</label>
                             <input type="number" class="form-control" placeholder="Rp 300.000">
                         </div>
-
-                        <!-- Harga Max -->
                         <div class="col-md-2">
-                            <small class="fw-bold">Harga Maksimum</small>
-                            <input type="text" class="form-control" placeholder="Rp 1.000.000">
+                            <label class="form-label small fw-semibold text-muted">Harga Maks</label>
+                            <input type="number" class="form-control" placeholder="Rp 1.000.000">
                         </div>
-                    </div>
-                    <div class="row g-3 align-items-center mt-1">
-                        <!-- Button -->
-                        <div class="col-md-12">
-                            <button class="btn btn-success w-100">
-                                Filter
-                            </button>
+                        <div class="col-12 text-end mt-3">
+                            <button class="btn btn-success px-4"><i class="bi bi-funnel me-2"></i>Cari Kost</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="container mt-4">
-
-            <div class="row g-3">
-
-                <!-- CARD 5 -->
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <a href="#" class="text-dark text-decoration-none">
-                        <div class="card border-0 shadow-sm kost-card h-100">
-                            <div class="position-relative">
-                                <img src="<?php echo e(asset('img/kost1.jpg')); ?>" class="card-img-top kost-img">
-                                <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                    Campur
-                                </span>
-                            </div>
-
-                            <div class="card-body">
-                                <h6 class="fw-bold">Kost Queen Gracia</h6><small class="text-muted">Tataaran Patar</small>
-                                <p class="truncate-2">WiFi • AC • .asdasdasdasda..</p>
-                                <h6 class="text-primary">Rp2.500.000</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="row mt-3 ms-1">
-                    <div class="col-12">
-                        <ul class="pagination pagination-sm justify-content-center mb-0">
-                            <li class="page-item active"><span class="page-link">1</span></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">10</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container my-5">
-
-            <h4 class="fw-bold mb-3 text-center">
-                Sistem Pemilihan Kost Menggunakan Metode TOPSIS
-            </h4>
-
-            <div class="d-flex justify-content-center">
-                <div style="max-width: 700px; width: 100%;">
-                    <p class="text-muted fs-6 mb-0" style="text-align: justify">
-                        Dalam memilih kost yang ideal, setiap orang tentu memiliki banyak pertimbangan seperti harga,
-                        lokasi, fasilitas, hingga kenyamanan. Karena banyaknya faktor yang harus dibandingkan, proses
-                        pengambilan keputusan sering kali menjadi tidak mudah dan memakan waktu. Untuk itu, sistem ini hadir
-                        dengan pendekatan <b>TOPSIS (Technique for Order Preference by Similarity to Ideal Solution)</b>,
-                        yaitu sebuah metode dalam sistem pendukung keputusan yang mampu membandingkan banyak alternatif
-                        secara objektif berdasarkan beberapa kriteria yang telah ditentukan. Dengan metode ini, setiap
-                        pilihan kost akan dihitung tingkat kedekatannya terhadap solusi ideal terbaik, sehingga menghasilkan
-                        rekomendasi yang lebih akurat dan terukur.
+        <div class="container mb-5">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold text-dark mb-2">Sistem Rekomendasi Pintar (TOPSIS)</h4>
+                <div class="d-flex justify-content-center">
+                    <p class="text-muted fs-6 mb-0" style="max-width: 750px; text-align: center;">
+                        Gunakan kecerdasan buatan metode <b>TOPSIS</b> untuk membandingkan puluhan alternatif secara objektif.
+                        Sistem akan menghitung bobot nilai dari kriteria pilihanmu untuk menghasilkan urutan kost paling akurat dan ideal.
                     </p>
                 </div>
-            </div>
-
-            <!-- BUTTON TOGGLE -->
-            <div class="text-center mt-3">
-                <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#preferensiTopsis" aria-expanded="false" aria-controls="preferensiTopsis">
-                    Coba Sekarang
+                <button class="btn btn-success px-4 py-2 fw-semibold mt-3 shadow-sm" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#preferensiTopsis" aria-expanded="false">
+                    <i class="bi bi-cpu me-2"></i>Coba Rekomendasi TOPSIS
                 </button>
             </div>
 
-            <!-- FORM COLLAPSE -->
-            <div class="collapse mt-3" id="preferensiTopsis">
+            <div class="collapse" id="preferensiTopsis">
+                <div class="card border-0 shadow-sm p-4 bg-white mx-auto" style="max-width: 950px;">
+                    <h5 class="fw-bold text-center text-success mb-1">Atur Parameter Kriteria Pilihan Anda</h5>
+                    <p class="text-muted small text-center mb-4">Sistem akan menyusun rekomendasi terbaik berdasarkan skala prioritas bobot di bawah ini.</p>
 
-                <div class="d-flex justify-content-center">
-                    <div class="card border-0 shadow-sm p-3" style="max-width: 900px; width:100%;">
-
-                        <h6 class="fw-bold text-center">
-                            Technique for Order Preference by Similarity to Ideal Solution
-                        </h6>
-
-                        <p class="text-muted small text-center mb-3">
-                            Isi sesuai kebutuhanmu. Sistem akan menyesuaikan rekomendasi berdasarkan preferensi ini.
-                        </p>
-
-                        <form>
-
-                            <!-- Harga -->
-                            <div class="mb-2">
-                                <label class="form-label">Rentang Harga (maksimal)</label>
-                                <input type="text" id="harga" class="form-control form-control-sm"
-                                    placeholder="Rp 100.000">
-                            </div>
-
-                            <!-- Lokasi -->
-                            <div class="mb-2">
-                                <label class="form-label">Lokasi Anda</label>
-
-                                <button type="button" class="btn btn-primary btn-sm w-100" id="getLocation">
-                                    Gunakan Lokasi Saya (GPS)
-                                </button>
-
-                                <div class="mt-2 small text-muted" id="locationResult">
-                                    Lokasi belum diambil
+                    <form>
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-dark">1. Batas Anggaran Bulanan</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="bi bi-wallet2 text-muted"></i></span>
+                                        <input type="text" id="harga" class="form-control" placeholder="Contoh: Rp 800.000">
+                                    </div>
                                 </div>
-
-                                <input type="hidden" name="lat" id="lat">
-                                <input type="hidden" name="lng" id="lng">
-                            </div>
-
-                            <!-- KEAMANAN -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Keamanan</label>
-
-                                <div class="row row-cols-3">
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="cctv">
-                                            <label class="form-check-label">CCTV</label>
-                                        </div>
+                                <div>
+                                    <label class="form-label fw-bold text-dark">2. Radius Jarak Koordinat</label>
+                                    <button type="button" class="btn btn-outline-primary w-100 py-2 fw-semibold" id="getLocation">
+                                        <i class="bi bi-geo-alt-fill me-2"></i>Gunakan Posisi Saya Saat Ini (GPS)
+                                    </button>
+                                    <div class="mt-2 p-2 rounded border bg-light text-center text-muted small" id="locationResult">
+                                        <i class="bi bi-info-circle me-1"></i>Titik koordinat belum disinkronkan.
                                     </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="satpam">
-                                            <label class="form-check-label">Satpam 24 Jam</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="akses_kartu">
-                                            <label class="form-check-label">Akses Kartu</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="gerbang">
-                                            <label class="form-check-label">Gerbang Terkunci</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="cctv_24h">
-                                            <label class="form-check-label">CCTV 24 Jam</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="security_gate">
-                                            <label class="form-check-label">Security Gate</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="lampu_jalan">
-                                            <label class="form-check-label">Lampu Jalan</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="kunci_pintu">
-                                            <label class="form-check-label">Kunci Pintu Ganda</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="keamanan[]"
-                                                value="pos_jaga">
-                                            <label class="form-check-label">Pos Jaga</label>
-                                        </div>
-                                    </div>
-
+                                    <input type="hidden" name="lat" id="lat">
+                                    <input type="hidden" name="lng" id="lng">
                                 </div>
                             </div>
 
-                            <!-- KEBERSIHAN -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Kebersihan</label>
-
-                                <div class="row row-cols-3">
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih1"
-                                                name="kebersihan[]" value="petugas">
-                                            <label class="form-check-label" for="bersih1">Petugas Kebersihan</label>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark mb-2">3. Fasilitas & Penunjang Keamanan</label>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <div class="criteria-box">
+                                            <small class="fw-bold text-success d-block mb-2"><i class="bi bi-shield-check me-1"></i>Keamanan</small>
+                                            <div class="row row-cols-2 g-2">
+                                                <?php $__currentLoopData = $keamanan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" name="keamanan[]" value="<?php echo e($k->id); ?>" id="k-<?php echo e($k->id); ?>"><label class="form-check-label small" for="k-<?php echo e($k->id); ?>"><?php echo e($k->keterangan); ?></label></div></div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih2"
-                                                name="kebersihan[]" value="tempat_sampah">
-                                            <label class="form-check-label" for="bersih2">Tempat Sampah Tersedia</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih3"
-                                                name="kebersihan[]" value="jadwal_bersih">
-                                            <label class="form-check-label" for="bersih3">Jadwal Bersih Rutin</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih4"
-                                                name="kebersihan[]" value="kamar_bersih">
-                                            <label class="form-check-label" for="bersih4">Kamar Bersih</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih5"
-                                                name="kebersihan[]" value="drainase_baik">
-                                            <label class="form-check-label" for="bersih5">Saluran Air Lancar</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih6"
-                                                name="kebersihan[]" value="bau_rumah_baik">
-                                            <label class="form-check-label" for="bersih6">Tidak Bau Tidak Sedap</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih7"
-                                                name="kebersihan[]" value="lantai_bersih">
-                                            <label class="form-check-label" for="bersih7">Lantai Bersih</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih8"
-                                                name="kebersihan[]" value="kamar_mandi_bersih">
-                                            <label class="form-check-label" for="bersih8">Kamar Mandi Bersih</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="bersih9"
-                                                name="kebersihan[]" value="bebas_hama">
-                                            <label class="form-check-label" for="bersih9">Bebas Hama / Serangga</label>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- FASILITAS -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Fasilitas</label>
-
-                                <div class="row row-cols-3">
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas1"
-                                                name="fasilitas[]" value="wifi">
-                                            <label class="form-check-label" for="fasilitas1">WiFi</label>
-                                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="criteria-box">
+                                    <small class="fw-bold text-info d-block mb-2"><i class="bi bi-sparkles me-1"></i>Kebersihan Lingkungan</small>
+                                    <div class="row row-cols-2 g-2">
+                                        <?php $__currentLoopData = $kebersihan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $b): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" name="kebersihan[]" value="<?php echo e($b->id); ?>" id="b-<?php echo e($b->id); ?>"><label class="form-check-label small" for="b-<?php echo e($b->id); ?>"><?php echo e($b->keterangan); ?></label></div></div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas2"
-                                                name="fasilitas[]" value="ac">
-                                            <label class="form-check-label" for="fasilitas2">AC</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas3"
-                                                name="fasilitas[]" value="dapur">
-                                            <label class="form-check-label" for="fasilitas3">Dapur</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas4"
-                                                name="fasilitas[]" value="parkir">
-                                            <label class="form-check-label" for="fasilitas4">Parkir</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas5"
-                                                name="fasilitas[]" value="air_panas">
-                                            <label class="form-check-label" for="fasilitas5">Air Panas</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas6"
-                                                name="fasilitas[]" value="kasur">
-                                            <label class="form-check-label" for="fasilitas6">Kasur</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas7"
-                                                name="fasilitas[]" value="lemari">
-                                            <label class="form-check-label" for="fasilitas7">Lemari</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas8"
-                                                name="fasilitas[]" value="meja_kursi">
-                                            <label class="form-check-label" for="fasilitas8">Meja & Kursi</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="fasilitas9"
-                                                name="fasilitas[]" value="laundry">
-                                            <label class="form-check-label" for="fasilitas9">Laundry</label>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="criteria-box">
+                                    <small class="fw-bold text-warning d-block mb-2"><i class="bi bi-house-heart me-1"></i>Fasilitas Kamar</small>
+                                    <div class="row row-cols-2 g-2">
+                                        <?php $__currentLoopData = $fasilitas ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" name="fasilitas[]" value="<?php echo e($f->id); ?>" id="f-<?php echo e($f->id); ?>"><label class="form-check-label small" for="f-<?php echo e($f->id); ?>"><?php echo e($f->keterangan); ?></label></div></div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <button type="submit" class="btn btn-success btn-sm w-100 mt-2">
-                                Terapkan Preferensi
-                            </button>
-
-                        </form>
-
-                    </div>
+                        <button type="submit" class="btn btn-success w-100 py-2.5 fw-bold shadow-sm">
+                            <i class="bi bi-lightning-charge me-2"></i>Hitung & Tampilkan Rekomendasi Ideal
+                        </button>
+                    </form>
                 </div>
-
             </div>
         </div>
+
     </div>
 
-    <!-- Fungsi Lokasi -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById('ajax-dashboard-kost');
+
+            container.addEventListener('click', function (e) {
+                const targetLink = e.target.closest('.pagination a');
+
+                if (targetLink) {
+                    e.preventDefault();
+                    const url = targetLink.getAttribute('href');
+                    if (url) {
+                        fetchData(url);
+                    }
+                }
+            });
+
+            function fetchData(url) {
+                container.style.opacity = '0.5';
+
+                fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    container.innerHTML = html;
+                    container.style.opacity = '1';
+
+                    // Otomatis scroll fokus ke atas judul Rekomendasi Kost
+                    document.getElementById('dashboard-kost-section').scrollIntoView({ behavior: 'smooth' });
+                })
+                .catch(error => {
+                    console.error('Error fetching dashboard pagination data:', error);
+                    container.style.opacity = '1';
+                });
+            }
+        });
+    </script>
+
     <script>
         document.getElementById("getLocation").onclick = function() {
-
             if (!navigator.geolocation) {
                 alert("Browser tidak mendukung GPS");
                 return;
             }
-
+            document.getElementById("locationResult").innerHTML = `<div class="spinner-border spinner-border-sm text-primary me-1"></div> Mengambil data koordinat...`;
             navigator.geolocation.getCurrentPosition(async function(position) {
-
-                    let lat = position.coords.latitude;
-                    let lng = position.coords.longitude;
-
-                    // simpan koordinat untuk backend
-                    document.getElementById("lat").value = lat;
-                    document.getElementById("lng").value = lng;
-
-                    // reverse geocoding (ambil nama lokasi)
-                    try {
-                        let response = await fetch(
-                            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-                        );
-
-                        let data = await response.json();
-
-                        let locationName =
-                            data.address.city ||
-                            data.address.town ||
-                            data.address.village ||
-                            data.address.suburb ||
-                            data.display_name;
-
-                        document.getElementById("locationResult").innerHTML =
-                            "📍 Lokasi Anda: <b>" + locationName + "</b>";
-
-                    } catch (error) {
-                        document.getElementById("locationResult").innerHTML =
-                            "📍 Lokasi berhasil diambil (nama tidak tersedia)";
-                    }
-
-                },
-                function(error) {
-
-                    document.getElementById("locationResult").innerHTML =
-                        "❌ Gagal mengambil lokasi: " + error.message;
-                });
-
+                let lat = position.coords.latitude;
+                let lng = position.coords.longitude;
+                document.getElementById("lat").value = lat;
+                document.getElementById("lng").value = lng;
+                try {
+                    let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                    let data = await response.json();
+                    let locationName = data.address.city || data.address.town || data.address.village || data.address.suburb || data.display_name;
+                    document.getElementById("locationResult").innerHTML = `<i class="bi bi-geo-alt-fill text-success me-1"></i> Lokasi Anda: <b>${locationName}</b>`;
+                } catch (error) {
+                    document.getElementById("locationResult").innerHTML = `<i class="bi bi-check-circle-fill text-primary me-1"></i> GPS Sinkron (Nama jalan tidak termuat)`;
+                }
+            }, function(error) {
+                document.getElementById("locationResult").innerHTML = `<i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Gagal melacak: ${error.message}`;
+            });
         };
     </script>
 
-    <!-- Fungsi Harga -->
     <script>
         document.getElementById('harga').addEventListener('input', function(e) {
-            let value = e.target.value;
-
-            // hapus semua selain angka
-            value = value.replace(/\D/g, '');
-
-            // format ke rupiah
+            let value = e.target.value.replace(/\D/g, '');
             let formatted = new Intl.NumberFormat('id-ID').format(value);
-
             e.target.value = value ? 'Rp ' + formatted : '';
-        });
-    </script>
-
-    <!-- Fungsi Swiper -->
-    <script>
-        var swiper = new Swiper(".dashboardSwiper", {
-            spaceBetween: 20,
-            slidesPerView: "auto",
-
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-
-            breakpoints: {
-                0: {
-                    slidesPerView: 1
-                },
-                768: {
-                    slidesPerView: 2
-                },
-                992: {
-                    slidesPerView: 4
-                }
-            }
         });
     </script>
 <?php $__env->stopSection(); ?>

@@ -21,6 +21,7 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Pages\ComingSoonController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Pages\ProfileUserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,6 +41,12 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     // Akses Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    Route::get('profile/user', [ProfileUserController::class, 'edit'])->name('profile.user.edit');
+
+    Route::put('profile/user/update', [ProfileUserController::class, 'update'])->name('profile.user.update');
+
+    Route::put('profile/user/password', [ProfileUserController::class, 'updatePassword'])->name('profile.user.password');
 });
 
 // Hanya admin yang bisa akses.
