@@ -71,7 +71,7 @@
                             document.write(new Date().getFullYear());
                         </script>
                         made with ❤️ by
-                        <a href="https://instagram.com/bolonsite" target="_blank" class="footer-link">bolonsite</a>
+                        <a href="https://instagram.com/wilsonandrn" target="_blank" class="footer-link">wilson</a>
                     </div>
                 </div>
             </div>
