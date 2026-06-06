@@ -1,19 +1,6 @@
 <?php $__env->startSection('title', 'Dashboard | Sistem Pemilihan Kost'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <?php
-        $fakultas = [
-            'fatek' => 'Teknik',
-            'feb' => 'Ekonomi & Bisnis',
-            'fbs' => 'Bahasa & Seni',
-            'fish' => 'Sosial & Hukum',
-            'fikkm' => 'Ilmu Keolahragaan & Kesehatan Masyarakat',
-            'fke' => 'Kedokteran',
-            'fipp' => 'Ilmu Pendidikan',
-        ];
-    ?>
-
-    
     <style>
         .kost-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -40,18 +27,210 @@
         }
     </style>
 
-    <div class="py-4" id="dashboard-kost-section">
+    <div class="py-4">
 
+        
         <div class="container mb-5">
             <div class="mb-4">
-                <h4 class="fw-bold text-dark mb-1">Kost-Kost Terbaik</h4>
+                <h4 class="fw-bold text-dark mb-1"><i class="bi bi-award text-warning me-2"></i>8 Kost Terbaik Berdasarkan
+                    Hasil TOPSIS</h4>
+            </div>
+
+            <div class="row g-4">
+                <?php $__currentLoopData = $kostsTopsis ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <a href="<?php echo e(route('dashboard.kost.show', $kos->id)); ?>"
+                            class="text-decoration-none text-dark d-block h-100">
+                            <div class="card border-0 shadow-sm h-100 kost-card">
+                                <div class="position-relative">
+                                    <img src="<?php echo e($kos->foto->isNotEmpty() ? asset('storage/' . $kos->foto->first()->foto) : asset('template/paneladmin/assets/img/background/1.jpg')); ?>"
+                                        class="card-img-top kost-img" alt="<?php echo e($kos->nama_kost); ?>">
+                                    <span
+                                        class="badge bg-warning position-absolute top-0 start-0 m-2 px-2.5 py-1.5 shadow-sm text-dark fw-bold">
+                                        Rekomendasi
+                                    </span>
+                                </div>
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h6 class="fw-bold text-dark text-truncate mb-1" title="<?php echo e($kos->nama_kost); ?>">
+                                            <?php echo e($kos->nama_kost); ?></h6>
+                                        <small class="text-muted d-block mb-2">
+                                            <i class="bi bi-geo-alt me-1"></i><?php echo e($kos->daerah->name ?? 'Tidak Ada Daerah'); ?>
+
+                                        </small>
+                                        <p class="text-secondary small text-truncate mb-3"
+                                            title="<?php echo e($kos->fasilitas->implode('keterangan', ' • ')); ?>">
+                                            <?php echo e($kos->fasilitas->isEmpty() ? 'Fasilitas Standar' : $kos->fasilitas->implode('keterangan', ' • ')); ?>
+
+                                        </p>
+                                    </div>
+                                    <h6 class="text-primary fw-bold mb-0">Rp
+                                        <?php echo e(number_format($kos->harga, 0, ',', '.')); ?><span
+                                            class="text-muted fw-normal small">/bln</span></h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+        </div>
+
+        
+        <div class="container mb-5 mt-4">
+            <div class="card border-0 shadow-sm border-start border-success border-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 text-dark">
+                        <i class="bi bi-search me-2 text-success"></i>Filter Pencarian Kost
+                    </h5>
+
+                    <form id="filterForm" action="<?php echo e(route('dashboard.index')); ?>" method="GET">
+                        <div class="row g-3 align-items-end">
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-secondary">Daerah / Wilayah</label>
+                                <select class="form-select filter-input" name="daerah_kost_id" id="daerahSelect">
+                                    <option value="">Semua Daerah</option>
+                                    <?php $__currentLoopData = $daerah ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($d->id); ?>"
+                                            <?php echo e(request('daerah_kost_id') == $d->id ? 'selected' : ''); ?>>
+                                            <?php echo e($d->name); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-secondary">Jenis Kost</label>
+                                <select class="form-select filter-input" name="tipe_kost">
+                                    <option value="">Semua jenis</option>
+                                    <?php $__currentLoopData = $jenis ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($j->id); ?>"
+                                            <?php echo e(request('tipe_kost') == $j->id ? 'selected' : ''); ?>>
+                                            <?php echo e($j->jenis_kost); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-secondary">Harga Minimal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-wallet2 text-muted"></i></span>
+                                    <input type="text" id="harga_minimal" name="harga_minimal"
+                                        class="form-control rupiah-field filter-input"
+                                        value="<?php echo e(request('harga_minimal') ? 'Rp ' . number_format(request('harga_minimal'), 0, ',', '.') : ''); ?>"
+                                        placeholder="Contoh: Rp 300.000">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-secondary">Harga Maksimal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-wallet2 text-muted"></i></span>
+                                    <input type="text" id="harga_maksimal" name="harga_maksimal"
+                                        class="form-control rupiah-field filter-input"
+                                        value="<?php echo e(request('harga_maksimal') ? 'Rp ' . number_format(request('harga_maksimal'), 0, ',', '.') : ''); ?>"
+                                        placeholder="Contoh: Rp 1.000.000">
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button class="btn btn-sm btn-outline-success fw-semibold" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseKriteria" aria-expanded="false"
+                                    aria-controls="collapseKriteria">
+                                    <i class="bi bi-sliders me-1"></i> Pengaturan Kriteria Tambahan
+                                </button>
+                            </div>
+
+                            <div class="collapse col-12 <?php echo e(request('fasilitas') || request('keamanan') || request('kebersihan') ? 'show' : ''); ?>"
+                                id="collapseKriteria">
+                                <div class="row g-3 pt-2">
+
+                                    <div class="col-md-4">
+                                        <div class="criteria-box shadow-sm">
+                                            <label class="form-label small fw-bold text-success mb-2 d-block"><i
+                                                    class="bi bi-house-heart me-1"></i>Fasilitas Kamar</label>
+                                            <div style="max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                                                <?php $__currentLoopData = $fasilitas ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input filter-input" type="checkbox"
+                                                            name="fasilitas[]" value="<?php echo e($f->id); ?>"
+                                                            id="f-<?php echo e($f->id); ?>"
+                                                            <?php echo e(is_array(request('fasilitas')) && in_array($f->id, request('fasilitas')) ? 'checked' : ''); ?>>
+                                                        <label class="form-check-label small text-dark"
+                                                            for="f-<?php echo e($f->id); ?>"><?php echo e($f->keterangan); ?></label>
+                                                    </div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="criteria-box shadow-sm">
+                                            <label class="form-label small fw-bold text-primary mb-2 d-block"><i
+                                                    class="bi bi-shield-check me-1"></i>Sistem Keamanan</label>
+                                            <div style="max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                                                <?php $__currentLoopData = $keamanan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input filter-input" type="checkbox"
+                                                            name="keamanan[]" value="<?php echo e($k->id); ?>"
+                                                            id="k-<?php echo e($k->id); ?>"
+                                                            <?php echo e(is_array(request('keamanan')) && in_array($k->id, request('keamanan')) ? 'checked' : ''); ?>>
+                                                        <label class="form-check-label small text-dark"
+                                                            for="k-<?php echo e($k->id); ?>"><?php echo e($k->keterangan); ?></label>
+                                                    </div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="criteria-box shadow-sm">
+                                            <label class="form-label small fw-bold text-warning mb-2 d-block"><i
+                                                    class="bi bi-sparkles me-1"></i>Kebersihan</label>
+                                            <div style="max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                                                <?php $__currentLoopData = $kebersihan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $b): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input filter-input" type="checkbox"
+                                                            name="kebersihan[]" value="<?php echo e($b->id); ?>"
+                                                            id="b-<?php echo e($b->id); ?>"
+                                                            <?php echo e(is_array(request('kebersihan')) && in_array($b->id, request('kebersihan')) ? 'checked' : ''); ?>>
+                                                        <label class="form-check-label small text-dark"
+                                                            for="b-<?php echo e($b->id); ?>"><?php echo e($b->keterangan); ?></label>
+                                                    </div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-end mt-4 d-flex justify-content-end gap-2">
+                                <a href="<?php echo e(route('dashboard.index')); ?>" class="btn btn-outline-secondary px-4">Reset</a>
+                                <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm">
+                                    <i class="bi bi-search me-2"></i>Cari Kost
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="container mb-5" id="dashboard-kost-section">
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark mb-1">Seluruh Kamar Kost</h5>
             </div>
 
             <div id="ajax-dashboard-kost">
                 <div class="row g-4">
-                    <?php $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__empty_1 = true; $__currentLoopData = $kosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kos): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            
                             <a href="<?php echo e(route('dashboard.kost.show', $kos->id)); ?>"
                                 class="text-decoration-none text-dark d-block h-100">
                                 <div class="card border-0 shadow-sm h-100 kost-card">
@@ -66,8 +245,8 @@
                                     </div>
                                     <div class="card-body d-flex flex-column justify-content-between">
                                         <div>
-                                            <h6 class="fw-bold text-dark text-truncate mb-1" title="<?php echo e($kos->nama_kost); ?>">
-                                                <?php echo e($kos->nama_kost); ?></h6>
+                                            <h6 class="fw-bold text-dark text-truncate mb-1"
+                                                title="<?php echo e($kos->nama_kost); ?>"><?php echo e($kos->nama_kost); ?></h6>
                                             <small class="text-muted d-block mb-2">
                                                 <i
                                                     class="bi bi-geo-alt me-1"></i><?php echo e($kos->daerah->name ?? 'Tidak Ada Daerah'); ?>
@@ -86,271 +265,107 @@
                                 </div>
                             </a>
                         </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </div>
-
-                
-                <div class="d-flex justify-content-center mt-5 pagination-ajax">
-                    <?php echo e($kosts->links()); ?>
-
-                </div>
-            </div>
-
-            <div class="container mb-5">
-                <div class="card border-0 shadow-sm border-start border-success border-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-search me-2"></i>Filter Pencarian</h5>
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label small fw-semibold text-muted">Fakultas</label>
-                                <select class="form-select">
-                                    <?php $__currentLoopData = $jenis ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option><?php echo e($j->jenis_kost); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-semibold text-muted">Daerah</label>
-                                <select class="form-select">
-                                    <?php $__currentLoopData = $daerah ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option><?php echo e($d->name); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-semibold text-muted">Tipe Kost</label>
-                                <select class="form-select">
-                                    <option>Campur</option>
-                                    <option>Pria</option>
-                                    <option>Wanita</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-semibold text-muted">Harga Min</label>
-                                <input type="number" class="form-control" placeholder="Rp 300.000">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label small fw-semibold text-muted">Harga Maks</label>
-                                <input type="number" class="form-control" placeholder="Rp 1.000.000">
-                            </div>
-                            <div class="col-12 text-end mt-3">
-                                <button class="btn btn-success px-4"><i class="bi bi-funnel me-2"></i>Cari Kost</button>
-                            </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <div class="col-12 text-center py-5">
+                            <i class="bi bi-house-x text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2 mb-0">Tidak ada kamar kost yang cocok dengan kriteria filter Anda.
+                            </p>
                         </div>
-                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="d-flex justify-content-center mt-5 pagination-ajax">
+                    <?php echo e($kosts->appends(request()->query())->links()); ?>
+
                 </div>
             </div>
-
-            <div class="container mb-5">
-                <div class="text-center mb-4">
-                    <h4 class="fw-bold text-dark mb-2">Sistem Rekomendasi Pintar (TOPSIS)</h4>
-                    <div class="d-flex justify-content-center">
-                        <p class="text-muted fs-6 mb-0" style="max-width: 750px; text-align: center;">
-                            Gunakan kecerdasan buatan metode <b>TOPSIS</b> untuk membandingkan puluhan alternatif secara
-                            objektif.
-                            Sistem akan menghitung bobot nilai dari kriteria pilihanmu untuk menghasilkan urutan kost paling
-                            akurat dan ideal.
-                        </p>
-                    </div>
-                    <button class="btn btn-success px-4 py-2 fw-semibold mt-3 shadow-sm" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#preferensiTopsis" aria-expanded="false">
-                        <i class="bi bi-cpu me-2"></i>Coba Rekomendasi TOPSIS
-                    </button>
-                </div>
-
-                <div class="collapse" id="preferensiTopsis">
-                    <div class="card border-0 shadow-sm p-4 bg-white mx-auto" style="max-width: 950px;">
-                        <h5 class="fw-bold text-center text-success mb-1">Atur Parameter Kriteria Pilihan Anda</h5>
-                        <p class="text-muted small text-center mb-4">Sistem akan menyusun rekomendasi terbaik berdasarkan
-                            skala prioritas bobot di bawah ini.</p>
-
-                        <form>
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold text-dark">1. Batas Anggaran Bulanan</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light"><i
-                                                    class="bi bi-wallet2 text-muted"></i></span>
-                                            <input type="text" id="harga" class="form-control"
-                                                placeholder="Contoh: Rp 800.000">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="form-label fw-bold text-dark">2. Radius Jarak Koordinat</label>
-                                        <button type="button" class="btn btn-outline-primary w-100 py-2 fw-semibold"
-                                            id="getLocation">
-                                            <i class="bi bi-geo-alt-fill me-2"></i>Gunakan Posisi Saya Saat Ini (GPS)
-                                        </button>
-                                        <div class="mt-2 p-2 rounded border bg-light text-center text-muted small"
-                                            id="locationResult">
-                                            <i class="bi bi-info-circle me-1"></i>Titik koordinat belum disinkronkan.
-                                        </div>
-                                        <input type="hidden" name="lat" id="lat">
-                                        <input type="hidden" name="lng" id="lng">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold text-dark mb-2">3. Fasilitas & Penunjang
-                                        Keamanan</label>
-                                    <div class="row g-2">
-                                        <div class="col-12">
-                                            <div class="criteria-box">
-                                                <small class="fw-bold text-success d-block mb-2"><i
-                                                        class="bi bi-shield-check me-1"></i>Keamanan</small>
-                                                <div class="row row-cols-2 g-2">
-                                                    <?php $__currentLoopData = $keamanan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <div class="col">
-                                                            <div class="form-check"><input class="form-check-input"
-                                                                    type="checkbox" name="keamanan[]"
-                                                                    value="<?php echo e($k->id); ?>"
-                                                                    id="k-<?php echo e($k->id); ?>"><label
-                                                                    class="form-check-label small"
-                                                                    for="k-<?php echo e($k->id); ?>"><?php echo e($k->keterangan); ?></label>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <div class="criteria-box">
-                                        <small class="fw-bold text-info d-block mb-2"><i
-                                                class="bi bi-sparkles me-1"></i>Kebersihan Lingkungan</small>
-                                        <div class="row row-cols-2 g-2">
-                                            <?php $__currentLoopData = $kebersihan ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $b): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div class="col">
-                                                    <div class="form-check"><input class="form-check-input"
-                                                            type="checkbox" name="kebersihan[]"
-                                                            value="<?php echo e($b->id); ?>"
-                                                            id="b-<?php echo e($b->id); ?>"><label
-                                                            class="form-check-label small"
-                                                            for="b-<?php echo e($b->id); ?>"><?php echo e($b->keterangan); ?></label>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="criteria-box">
-                                        <small class="fw-bold text-warning d-block mb-2"><i
-                                                class="bi bi-house-heart me-1"></i>Fasilitas Kamar</small>
-                                        <div class="row row-cols-2 g-2">
-                                            <?php $__currentLoopData = $fasilitas ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div class="col">
-                                                    <div class="form-check"><input class="form-check-input"
-                                                            type="checkbox" name="fasilitas[]"
-                                                            value="<?php echo e($f->id); ?>"
-                                                            id="f-<?php echo e($f->id); ?>"><label
-                                                            class="form-check-label small"
-                                                            for="f-<?php echo e($f->id); ?>"><?php echo e($f->keterangan); ?></label>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100 py-2.5 fw-bold shadow-sm">
-                                <i class="bi bi-lightning-charge me-2"></i>Hitung & Tampilkan Rekomendasi Ideal
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const container = document.getElementById('ajax-dashboard-kost');
+    </div>
 
-                container.addEventListener('click', function(e) {
-                    const targetLink = e.target.closest('.pagination a');
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.getElementById('ajax-dashboard-kost');
+            const filterForm = document.getElementById('filterForm');
 
-                    if (targetLink) {
-                        e.preventDefault();
-                        const url = targetLink.getAttribute('href');
-                        if (url) {
-                            fetchData(url);
-                        }
-                    }
-                });
-
-                function fetchData(url) {
-                    container.style.opacity = '0.5';
-
-                    fetch(url, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => response.text())
-                        .then(html => {
-                            container.innerHTML = html;
-                            container.style.opacity = '1';
-
-                            // Otomatis scroll fokus ke atas judul Rekomendasi Kost
-                            document.getElementById('dashboard-kost-section').scrollIntoView({
-                                behavior: 'smooth'
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching dashboard pagination data:', error);
-                            container.style.opacity = '1';
-                        });
+            // 1. Memperbaiki Event Delegation pada Pagination agar tetap bekerja setelah DOM di-replace
+            document.addEventListener('click', function(e) {
+                const targetLink = e.target.closest('#ajax-dashboard-kost .pagination a');
+                if (targetLink) {
+                    e.preventDefault();
+                    fetchData(targetLink.getAttribute('href'));
                 }
             });
-        </script>
 
-        <script>
-            document.getElementById("getLocation").onclick = function() {
-                if (!navigator.geolocation) {
-                    alert("Browser tidak mendukung GPS");
-                    return;
-                }
-                document.getElementById("locationResult").innerHTML =
-                    `<div class="spinner-border spinner-border-sm text-primary me-1"></div> Mengambil data koordinat...`;
-                navigator.geolocation.getCurrentPosition(async function(position) {
-                        let lat = position.coords.latitude;
-                        let lng = position.coords.longitude;
-                        document.getElementById("lat").value = lat;
-                        document.getElementById("lng").value = lng;
-                        try {
-                            let response = await fetch(
-                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-                            let data = await response.json();
-                            let locationName = data.address.city || data.address.town || data.address.village ||
-                                data.address.suburb || data.display_name;
-                            document.getElementById("locationResult").innerHTML =
-                                `<i class="bi bi-geo-alt-fill text-success me-1"></i> Lokasi Anda: <b>${locationName}</b>`;
-                        } catch (error) {
-                            document.getElementById("locationResult").innerHTML =
-                                `<i class="bi bi-check-circle-fill text-primary me-1"></i> GPS Sinkron (Nama jalan tidak termuat)`;
+            // 2. Handler untuk Submit Form Filter
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const baseUrl = this.getAttribute('action');
+                const params = new URLSearchParams();
+
+                // Menggunakan FormData untuk memudahkan penanganan struktur array input checkbox []
+                const formData = new FormData(filterForm);
+
+                for (let [key, value] of formData.entries()) {
+                    if (value !== "") {
+                        // Jika field harga murni (rupiah), hapus karakter teks 'Rp' dan titik (.) sebelum dikirim
+                        if (key === 'harga_minimal' || key === 'harga_maksimal') {
+                            value = value.replace(/\D/g, '');
                         }
-                    },
-                    function(error) {
-                        document.getElementById("locationResult").innerHTML =
-                            `<i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Gagal melacak: ${error.message}`;
-                    });
-            };
-        </script>
+                        // Append jika valuenya ada nilainya
+                        if (value !== "") {
+                            params.append(key, value);
+                        }
+                    }
+                }
 
-        <script>
-            document.getElementById('harga').addEventListener('input', function(e) {
+                fetchData(`${baseUrl}?${params.toString()}`);
+            });
+
+            // 3. Fungsi Utama AJAX Fetch Data
+            function fetchData(url) {
+                if (!url) return;
+                container.style.opacity = '0.5';
+
+                fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Tempel HTML baru hasil render partial dari controller
+                        container.innerHTML = html;
+                        container.style.opacity = '1';
+
+                        // Scroll halus otomatis ke batas daftar kost agar user sadar data berubah
+                        document.getElementById('dashboard-kost-section').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching filtered data:', error);
+                        container.style.opacity = '1';
+                    });
+            }
+        });
+    </script>
+
+    
+    <script>
+        document.querySelectorAll('.rupiah-field').forEach(function(input) {
+            input.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
                 let formatted = new Intl.NumberFormat('id-ID').format(value);
                 e.target.value = value ? 'Rp ' + formatted : '';
             });
-        </script>
-    <?php $__env->stopSection(); ?>
+        });
+    </script>
+<?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laravel\spk-topsis\resources\views/user/pages/dashboard.blade.php ENDPATH**/ ?>

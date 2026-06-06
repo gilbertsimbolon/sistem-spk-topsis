@@ -20,7 +20,50 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $kosts = Kost::with(['jenis', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'daerah'])->paginate(8);
+        $query = Kost::with(['jenis', 'fasilitas', 'keamanan', 'kebersihan', 'foto', 'daerah']);
+        
+        // Filter Daerah
+        if ($request->filled('daerah_kost_id')) {
+            $query->where('daerah_kost_id', $request->daerah_kost_id);
+        }
+
+        // Filter Jenis Kost (Mengambil ID dari DB)
+        if ($request->filled('tipe_kost')) {
+            $query->where('jenis_kost_id', $request->tipe_kost); 
+        }
+
+        // Filter Rentang Harga Minimal
+        if ($request->filled('harga_minimal')) {
+            $query->where('harga', '>=', $request->harga_minimal);
+        }
+
+        // Filter Rentang Harga Maksimal
+        if ($request->filled('harga_maksimal')) {
+            $query->where('harga', '<=', $request->harga_maksimal);
+        }
+
+        // Filter Fasilitas Kamar
+        if ($request->has('fasilitas') && is_array($request->fasilitas)) {
+            $query->whereHas('fasilitas', function($q) use ($request) {
+                $q->whereIn('fasilitas.id', $request->fasilitas); 
+            });
+        }
+
+        // Filter Sistem Keamanan
+        if ($request->has('keamanan') && is_array($request->keamanan)) {
+            $query->whereHas('keamanan', function($q) use ($request) {
+                $q->whereIn('keamanan.id', $request->keamanan);
+            });
+        }
+
+        // Filter Kebersihan
+        if ($request->has('kebersihan') && is_array($request->kebersihan)) {
+            $query->whereHas('kebersihan', function($q) use ($request) {
+                $q->whereIn('kebersihan.id', $request->kebersihan);
+            });
+        }
+
+        $kosts = $query->paginate(8)->appends($request->query());
 
         if ($request->ajax()) {
             return view('partials.kost_list', compact('kosts'))->render();
