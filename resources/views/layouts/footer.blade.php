@@ -39,7 +39,6 @@
                         <li><a href="#about">About</a></li>
                         <li><a href="#kost">Kost</a></li>
                         <li><a href="#faq">FAQ</a></li>
-                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -49,14 +48,13 @@
                 <div class="footer-widget">
                     <h3 class="m-0">Pelayanan Kami</h3>
                     <ul class="links">
-                        <li><a href="#0">Rekomendasi Kos</a></li>
-                        <li><a href="#0">Kos Terbaik</a></li>
-                        <li><a href="#0">Kos di FATEK</a></li>
-                        <li><a href="#0">Kos di FEB</a></li>
-                        <li><a href="#0">Kos di FIKKM</a></li>
-                        <li><a href="#0">Kos di FISH</a></li>
-                        <li><a href="#0">Kos di FEB</a></li>
-                        <li><a href="#0">Kos di FBS</a></li>
+                        <li><a href="#">Rekomendasi Kos</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FATEK</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FEB</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FIKKM</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FISH</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FEB</a></li>
+                        <li><a href="{{ route('login') }}">Kos di FBS</a></li>
                     </ul>
                 </div>
             </div>
