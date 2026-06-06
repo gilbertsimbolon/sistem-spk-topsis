@@ -57,7 +57,6 @@ class KostController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. Simpan data utama Kost
             $kost = Kost::create([
                 'nama_kost' => $request->nama_kost,
                 'alamat' => $request->alamat,
@@ -67,13 +66,10 @@ class KostController extends Controller
                 'owner_id' => Auth::id(),
             ]);
 
-            // 2. Simpan Relasi Many-to-Many menggunakan attach() bawaan Eloquent Laravel
-            // Jika checkbox tidak dicentang, fallback ke array kosong []
             $kost->fasilitas()->attach($request->fasilitas ?? []);
             $kost->keamanan()->attach($request->keamanan ?? []);
             $kost->kebersihan()->attach($request->kebersihan ?? []);
 
-            // 3. Upload Multi-Foto
             if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
                     $path = $file->store('kost', 'public');
@@ -99,17 +95,14 @@ class KostController extends Controller
      */
     public function show(string $id)
     {
-        // 1. Ambil data kost detail berdasarkan ID beserta relasinya
         $kost = Kost::with(['foto', 'jenis', 'daerah', 'fasilitas', 'keamanan', 'kebersihan'])->findOrFail($id);
 
-        // 2. Ambil semua data master untuk keperluan Modal Edit di halaman detail
-        $jenis = JenisKost::all(); // Sesuaikan nama model Jenis Kost Anda
-        $daerah = DaerahKost::all();   // Sesuaikan nama model Daerah Anda
+        $jenis = JenisKost::all(); 
+        $daerah = DaerahKost::all();   
         $fasilitas = Fasilitas::all();
         $keamanan = Keamanan::all();
         $kebersihan = Kebersihan::all();
 
-        // 3. Kirim SEMUA variabel ke view detail
         return view('admin.pages.manajemenkost.detail-kost', compact(
             'kost', 
             'jenis', 
@@ -146,7 +139,6 @@ class KostController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. Update data utama Kost
             $kost->update([
                 'nama_kost' => $request->nama_kost,
                 'alamat' => $request->alamat,
@@ -155,13 +147,10 @@ class KostController extends Controller
                 'daerah_kost_id' => $request->daerah_kost_id,
             ]);
 
-            // 2. Sinkronisasi Relasi menggunakan sync() bawaan Eloquent
-            // Fungsi ini otomatis menghapus data lama di pivot dan mengganti dengan data baru dari request
             $kost->fasilitas()->sync($request->fasilitas ?? []);
             $kost->keamanan()->sync($request->keamanan ?? []);
             $kost->kebersihan()->sync($request->kebersihan ?? []);
 
-            // 3. Upload Foto Baru (Jika ada file baru yang diunggah)
             if ($request->hasFile('foto')) {
                 foreach ($request->file('foto') as $file) {
                     $path = $file->store('kost', 'public');
@@ -188,13 +177,10 @@ class KostController extends Controller
     {
         $kost = Kost::findOrFail($id);
 
-        // Hapus file fisik foto dari storage public
         foreach ($kost->foto as $foto) {
             Storage::disk('public')->delete($foto->foto);
         }
 
-        // Relasi pivot (kost_fasilitas, kost_keamanan, kost_kebersihan) otomatis terhapus 
-        // karena Anda sudah menambahkan onDelete('cascade') di file migration.
         $kost->delete();
 
         return redirect()->route('data-kost.index')->with('success', 'Data berhasil dihapus');

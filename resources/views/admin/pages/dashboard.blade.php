@@ -4,30 +4,6 @@
 
 @section('content')
     <div class="row">
-        <div class="col-12 mb-6">
-            <div class="card h-100">
-                <div class="d-flex align-items-end row">
-                    <div class="col-sm-7">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary mb-3">Selamat Datang, {{ auth()->user()->name ?? 'Admin' }}!
-                                🎉</h5>
-                            <p class="mb-4">
-                                Anda berada di panel kendali <span class="fw-bold">SIPKOS</span> (Sistem Informasi &
-                                Rekomendasi Kost). Pantau seluruh metrik, data pengguna, dan pertumbuhan kost di sini.
-                            </p>
-                            <a href="{{ route('data-kost.index') }}" class="btn btn-sm btn-outline-primary">Kelola Data
-                                Kost</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-5 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-6">
-                            <img src="{{ asset('template/paneladmin/assets/img/illustrations/man-with-laptop.png') }}"
-                                height="175" alt="View Badge User" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6 mb-6">
             <div class="card h-100">
